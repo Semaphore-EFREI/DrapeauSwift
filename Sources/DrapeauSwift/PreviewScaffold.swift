@@ -13,13 +13,15 @@ public struct PreviewScaffold<Content: View>: View {
     
     // MARK: Attributes
     
+    var backgroundColor: Color
     let content: Content
     
     
     
     // MARK: Init
     
-    init(@ViewBuilder content: () -> Content) {
+    init(backgroundColor: Color = .drapSecondaryBackground, @ViewBuilder content: () -> Content) {
+        self.backgroundColor = backgroundColor
         self.content = content()
         
         do {
@@ -33,11 +35,21 @@ public struct PreviewScaffold<Content: View>: View {
 
     public var body: some View {
         ZStack {
-            Color.drapPrimaryBackground
+            backgroundColor
                 .ignoresSafeArea()
             
             content
                 .padding(24)
         }
+    }
+}
+
+
+
+
+
+#Preview {
+    PreviewScaffold {
+        Text("Bonjour, monde !")
     }
 }

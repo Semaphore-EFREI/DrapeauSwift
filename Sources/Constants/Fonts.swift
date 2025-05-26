@@ -8,6 +8,44 @@
 import SwiftUI
 
 
+/// Ne peut s'appliquer qu'à du texte
+public extension Text {
+    func drapTitle() -> Text {
+        self.font(Font.custom("Montserrat", size: 24)).fontWeight(.semibold)
+    }
+    
+    func drapPageTitle() -> Text {
+        self.font(Font.custom("Montserrat", size: 20)).fontWeight(.semibold)
+    }
+    
+    func drapPageSubtitle() -> Text {
+        self.font(Font.custom("Montserrat", size: 18)).fontWeight(.semibold)
+    }
+    
+    func drapImportantBody() -> Text {
+        self.font(Font.custom("Montserrat", size: 15)).fontWeight(.semibold)
+    }
+    
+    func drapBody() -> Text {
+        self.font(Font.custom("Montserrat", size: 15)).fontWeight(.medium)
+    }
+    
+    func drapButton() -> Text {
+        self.font(Font.custom("Montserrat", size: 14)).fontWeight(.semibold)
+    }
+    
+    func drapImportantDescription() -> Text {
+        self.font(Font.custom("Montserrat", size: 13)).fontWeight(.semibold)
+    }
+    
+    func drapDescription() -> Text {
+        self.font(Font.custom("Montserrat", size: 13)).fontWeight(.medium)
+    }
+}
+
+
+
+/// Peut s'appliquer à n'importe quelle vue
 public extension View {
     func drapTitle() -> some View {
         self.font(Font.custom("Montserrat", size: 24)).fontWeight(.semibold)
@@ -40,13 +78,29 @@ public extension View {
     func drapDescription() -> some View {
         self.font(Font.custom("Montserrat", size: 13)).fontWeight(.medium)
     }
+}
     
     
-    
+ 
+public extension Image {
     func buttonIcon() -> some View {
         self.font(.system(size: 17)).fontWeight(.medium)
     }
+    
+    func bodyIcon() -> some View {
+        self.font(.system(size: 15)).fontWeight(.semibold)
+    }
+    
+    func lightDecorationIcon() -> some View {
+        self.font(.system(size: 28)).fontWeight(.bold)
+    }
+    
+    func fullDecorationIcon() -> some View {
+        self.font(.system(size: 30)).fontWeight(.bold)
+    }
 }
+
+
 
 
 
