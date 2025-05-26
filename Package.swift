@@ -5,20 +5,26 @@ import PackageDescription
 
 let package = Package(
     name: "DrapeauSwift",
+    platforms: [.macOS(.v14), .iOS(.v17)],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "DrapeauSwift",
-            targets: ["DrapeauSwift"]),
+            targets: ["DrapeauSwift", "Constants"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "DrapeauSwift"),
+            name: "DrapeauSwift",
+            dependencies: ["Constants"]
+        ),
+        .target(
+            name: "Constants"
+        ),
         .testTarget(
             name: "DrapeauSwiftTests",
-            dependencies: ["DrapeauSwift"]
+            dependencies: ["DrapeauSwift", "Constants"]
         ),
     ]
 )
