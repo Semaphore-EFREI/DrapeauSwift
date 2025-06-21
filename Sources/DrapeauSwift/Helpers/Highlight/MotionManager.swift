@@ -29,7 +29,7 @@ class MotionManager: ObservableObject {
             let roll = motion.attitude.roll // entre -π et π
             let degrees = (roll / .pi) * 180.0 // pourcentage, à calibrer selon ton ressenti
             self?.glossAngle = .degrees(degrees + 90) // 90 = vertical, ajuste au besoin
-            print(self?.glossAngle ?? .degrees(0))
+            print(self?.glossAngle.degrees ?? 0.0)
         }
     }
     
