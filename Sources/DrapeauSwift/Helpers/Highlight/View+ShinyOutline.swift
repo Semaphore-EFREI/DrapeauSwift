@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension View {
-    func shinyOutline<S: InsettableShape>(shape: S, lineWidth: CGFloat = 1) -> some View {
-        modifier(ShinyOutlineModifier(shape: shape, lineWidth: lineWidth))
+    func shinyOutline<S: InsettableShape>(shape: S, cornerRadius: CGFloat, lineWidth: CGFloat = 1) -> some View {
+        modifier(ShinyOutlineModifier(shape: shape, cornerRadius: cornerRadius, lineWidth: lineWidth))
     }
 }

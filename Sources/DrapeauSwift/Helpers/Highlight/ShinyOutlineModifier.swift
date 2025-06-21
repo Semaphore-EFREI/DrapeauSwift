@@ -15,6 +15,7 @@ struct ShinyOutlineModifier<S: InsettableShape>: ViewModifier {
     @EnvironmentObject var motion: MotionManager
     
     var shape: S
+    var cornerRadius: CGFloat
     var lineWidth: CGFloat
     
     
@@ -29,7 +30,7 @@ struct ShinyOutlineModifier<S: InsettableShape>: ViewModifier {
                     .stroke(Color.black.opacity(0.1), lineWidth: lineWidth)
             )
             .overlay(
-                ShinyOutlineOverlay(shape: shape, glossAngle: motion.glossAngle, lineWidth: lineWidth)
+                ShinyOutlineOverlay(shape: shape, cornerRadius: cornerRadius, angle: $motion.angle, lineWidth: lineWidth)
             )
             .clipShape(shape)
     }

@@ -46,7 +46,7 @@ public struct CourseCell: View {
         .padding(16)
         .background(Color.drapSecondaryBackground)
         .roundedCorners(style: .large)
-        .shinyOutline(shape: RoundedRectangle(cornerRadius: 32, style: .continuous))
+        .shinyOutline(shape: RoundedRectangle(cornerRadius: 32, style: .continuous), cornerRadius: 32)
     }
     
     

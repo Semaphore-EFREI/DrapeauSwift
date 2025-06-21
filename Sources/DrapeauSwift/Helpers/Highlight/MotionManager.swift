@@ -16,7 +16,7 @@ class MotionManager: ObservableObject {
     // MARK: Attributes
     
     private var motionManager = CMMotionManager()
-    @Published var glossAngle: Angle = .degrees(90)
+    @Published var angle: Double = 0.0
     
     
     
@@ -26,10 +26,9 @@ class MotionManager: ObservableObject {
         motionManager.deviceMotionUpdateInterval = 1.0 / 60.0
         motionManager.startDeviceMotionUpdates(to: .main) { [weak self] motion, _ in
             guard let motion = motion else { return }
-            let roll = motion.attitude.roll // entre -π et π
-            let degrees = (roll / .pi) * 180.0 // pourcentage, à calibrer selon ton ressenti
-            self?.glossAngle = .degrees(degrees + 90) // 90 = vertical, ajuste au besoin
-            print(self?.glossAngle.degrees ?? 0.0)
+            self?.angle = motion.attitude.roll // entre -π et π
+            
+            print(self?.angle ?? 0.0)
         }
     }
     
