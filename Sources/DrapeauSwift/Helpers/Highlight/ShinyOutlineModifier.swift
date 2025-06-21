@@ -24,8 +24,7 @@ struct ShinyOutlineModifier<S: InsettableShape>: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .padding(lineWidth) // Laisse la place pour le contour
-            .background(
+            .overlay(
                 shape
                     .stroke(Color.black.opacity(0.1), lineWidth: lineWidth)
             )

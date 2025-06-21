@@ -12,7 +12,7 @@ struct ShinyOutlineOverlay<S>: View where S: InsettableShape {
     
     // MARK: Attributes
     
-    @State var gradientValues: (x: Double, y: Double, a: Double, b: Double) = (0, 0, 0, 0)
+    @State var gradientValues: [GradientValue] = []
     
     var shape: S
     var cornerRadius: CGFloat
@@ -29,10 +29,10 @@ struct ShinyOutlineOverlay<S>: View where S: InsettableShape {
                 .stroke(
                     AngularGradient(
                         gradient: Gradient(stops: [
-                            .init(color: .white.opacity(0.0), location: gradientValues.a),
-                            .init(color: .white.opacity(1.0), location: gradientValues.x),
-                            .init(color: .white.opacity(1.0), location: gradientValues.y),
-                            .init(color: .white.opacity(0.0), location: gradientValues.b)
+                            .init(color: .white.opacity(gradientValues[0].intensity), location: gradientValues[0].position),
+                            .init(color: .white.opacity(gradientValues[1].intensity), location: gradientValues[1].position),
+                            .init(color: .white.opacity(gradientValues[2].intensity), location: gradientValues[2].position),
+                            .init(color: .white.opacity(gradientValues[3].intensity), location: gradientValues[3].position)
                         ]),
                         center: .center
                     ),
@@ -42,6 +42,7 @@ struct ShinyOutlineOverlay<S>: View where S: InsettableShape {
                 .allowsHitTesting(false)
                 .onChange(of: angle) { oldValue, newValue in
                     gradientValues = highlightZonesForRoundedRect(width: geo.size.width, height: geo.size.height, cornerRadius: cornerRadius, lightAngleDegrees: newValue)
+                    print(gradientValues)
                 }
         }
     }
@@ -124,7 +125,7 @@ struct ShinyOutlineOverlay<S>: View where S: InsettableShape {
                                      lightAngleDegrees: Double,
                                      samples: Int = 400,
                                      highlightThreshold: Double = 0.95,
-                                     shadowThreshold: Double = 0.05) -> (x: Double, y: Double, a: Double, b: Double) {
+                                     shadowThreshold: Double = 0.05) -> [GradientValue] {
 
         let lightAngle = lightAngleDegrees * .pi / 180
         let lightDir = CGVector(dx: cos(lightAngle), dy: sin(lightAngle))
@@ -164,6 +165,24 @@ struct ShinyOutlineOverlay<S>: View where S: InsettableShape {
         let xAndY = longestRun(highlights) ?? (0.0, 0.0)
         let aAndB = longestRun(shadows) ?? (0.0, 0.0)
 
-        return (x: xAndY.0, y: xAndY.1, a: aAndB.0, b: aAndB.1)
+        var values = [
+            GradientValue(intensity: 1.0, position: xAndY.0),
+            GradientValue(intensity: 1.0, position: xAndY.1),
+            GradientValue(intensity: 0.0, position: aAndB.0),
+            GradientValue(intensity: 0.0, position: aAndB.1)
+        ]
+        
+        values = values.sorted { $0.position < $1.position }
+        
+        return values
+    }
+    
+    
+    
+    // MARK: Inner Objects
+    
+    struct GradientValue {
+        var intensity: CGFloat
+        var position: Double
     }
 }
