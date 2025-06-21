@@ -29,10 +29,10 @@ struct ShinyOutlineOverlay<S>: View where S: InsettableShape {
                 .stroke(
                     AngularGradient(
                         gradient: Gradient(stops: [
-                            .init(color: .white.opacity(gradientValues[0].intensity), location: gradientValues[0].position),
-                            .init(color: .white.opacity(gradientValues[1].intensity), location: gradientValues[1].position),
-                            .init(color: .white.opacity(gradientValues[2].intensity), location: gradientValues[2].position),
-                            .init(color: .white.opacity(gradientValues[3].intensity), location: gradientValues[3].position)
+                            .init(color: .white.opacity(gradientValues.indices.contains(0) ? gradientValues[0].intensity : 0.0), location: gradientValues.indices.contains(0) ? gradientValues[0].position : 0.0),
+                            .init(color: .white.opacity(gradientValues.indices.contains(1) ? gradientValues[1].intensity : 0.0), location: gradientValues.indices.contains(1) ? gradientValues[1].position : 0.0),
+                            .init(color: .white.opacity(gradientValues.indices.contains(2) ? gradientValues[2].intensity : 0.0), location: gradientValues.indices.contains(2) ? gradientValues[2].position : 0.0),
+                            .init(color: .white.opacity(gradientValues.indices.contains(3) ? gradientValues[3].intensity : 0.0), location: gradientValues.indices.contains(3) ? gradientValues[3].position : 0.0)
                         ]),
                         center: .center
                     ),
