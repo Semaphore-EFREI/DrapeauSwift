@@ -11,8 +11,9 @@ import DrapeauSwift
 
 struct ContentView: View {
     var body: some View {
-        PreviewScaffold {
-            CourseCell(courseTitle: <#T##String#>, description: <#T##String#>, accentColor: <#T##Color#>, icon: <#T##String#>, firstButton: <#T##(() -> DrapButton)?##(() -> DrapButton)?##() -> DrapButton#>, secondButton: <#T##(() -> DrapButton)?##(() -> DrapButton)?##() -> DrapButton#>)
+        PreviewScaffold(backgroundColor: .drapPrimaryBackground) {
+            CourseCell(courseTitle: "Essai", description: "9 minutes pour signer", accentColor: .drapBlue, icon: "clock")
+
         }
     }
 }
