@@ -22,6 +22,19 @@ public struct CourseCell: View {
     
     
     
+    // MARK: Init
+    
+    public init(courseTitle: String, description: String, accentColor: Color, icon: String, firstButton: (() -> DrapButton)? = nil, secondButton: (() -> DrapButton)? = nil) {
+        self.courseTitle = courseTitle
+        self.description = description
+        self.accentColor = accentColor
+        self.icon = icon
+        self.firstButton = firstButton
+        self.secondButton = secondButton
+    }
+    
+    
+    
     // MARK: View
     
     public var body: some View {
