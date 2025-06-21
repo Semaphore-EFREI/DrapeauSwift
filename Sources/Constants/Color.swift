@@ -64,6 +64,10 @@ public extension Color {
         return Color("DTertiaryBackground", bundle: .module)
     }
     
+    static var drapQuaternaryBackground: Color {
+        return Color("DQuaternaryBackground", bundle: .module)
+    }
+    
     
     
     // MARK: Texte

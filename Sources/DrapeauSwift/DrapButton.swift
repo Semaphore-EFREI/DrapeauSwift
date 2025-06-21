@@ -16,6 +16,7 @@ struct DrapButton: View {
     var icon: String?
     var title: String
     var style: DrapButtonStyle = .primary
+    var disabled: Bool = false
     var action: () -> Void
     
     
@@ -35,6 +36,7 @@ struct DrapButton: View {
                 .roundedCorners(style: style.parameters.cornerStyle)
         }
         .buttonStyle(PlainButtonStyle())
+        .disabled(disabled)
     }
     
     
@@ -85,13 +87,13 @@ struct DrapButton: View {
                 DrapButtonParameters(
                     backgroundColor: .drapBlue,
                     foregroundColor: .drapInverseText,
-                    cornerStyle: .large
+                    cornerStyle: .medium
                 )
             case .secondaryRounded:
                 DrapButtonParameters(
                     backgroundColor: .drapSecondaryBackground,
                     foregroundColor: .drapBlue,
-                    cornerStyle: .large
+                    cornerStyle: .medium
                 )
             case .small:
                 DrapButtonParameters(

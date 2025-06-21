@@ -13,6 +13,10 @@ public struct PreviewScaffold<Content: View>: View {
     
     // MARK: Attributes
     
+    #if os(iOS)
+    @StateObject var motionManager = MotionManager()
+    #endif
+    
     var backgroundColor: Color
     let content: Content
     
@@ -20,7 +24,7 @@ public struct PreviewScaffold<Content: View>: View {
     
     // MARK: Init
     
-    init(backgroundColor: Color = .drapSecondaryBackground, @ViewBuilder content: () -> Content) {
+    public init(backgroundColor: Color = .drapSecondaryBackground, @ViewBuilder content: () -> Content) {
         self.backgroundColor = backgroundColor
         self.content = content()
         
@@ -40,6 +44,9 @@ public struct PreviewScaffold<Content: View>: View {
             
             content
                 .padding(24)
+                #if os(iOS)
+                .environmentObject(motionManager)
+                #endif
         }
     }
 }

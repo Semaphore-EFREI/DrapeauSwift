@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct CourseRow: View {
     
     // MARK: Attributes

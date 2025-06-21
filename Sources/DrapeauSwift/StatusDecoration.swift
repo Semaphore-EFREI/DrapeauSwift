@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 struct StatusDecoration: View {
     
     // MARK: Attributes
@@ -42,6 +43,7 @@ struct StatusDecoration: View {
                 .lightDecorationIcon()
                 .foregroundStyle(color)
         }
+        .padding(2)     // Pour compenser le fait que la bordure soit à cheval entre l'intérieur et l'extérieur du cercle
     }
     
     
@@ -82,6 +84,6 @@ struct StatusDecoration: View {
 
 #Preview {
     PreviewScaffold {
-        StatusDecoration(icon: "cloud", color: .drapPurple, style: .full)
+        StatusDecoration(icon: "clock", color: .drapBlue, style: .light)
     }
 }

@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+
 public struct InfoBox: View {
     
     // MARK: Attributes

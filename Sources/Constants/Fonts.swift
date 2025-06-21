@@ -96,7 +96,7 @@ public extension Image {
     }
     
     func fullDecorationIcon() -> some View {
-        self.font(.system(size: 30)).fontWeight(.bold)
+        self.font(.system(size: 30)).fontWeight(.heavy)
     }
 }
 

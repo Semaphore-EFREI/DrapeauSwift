@@ -44,6 +44,7 @@ public extension View {
 
 
 public enum RoundedCornersStyle: CGFloat {
-    case regular = 8
-    case large = 12
+    case regular = 16
+    case medium = 23
+    case large = 32
 }
