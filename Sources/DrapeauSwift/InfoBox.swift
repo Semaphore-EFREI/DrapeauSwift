@@ -12,9 +12,9 @@ public struct InfoBox: View {
     
     // MARK: Attributes
     
-    var title: String
-    var content: String
-    var style: InfoBoxStyle = .primaryLeading
+    public var title: String
+    public var content: String
+    public var style: InfoBoxStyle = .primaryLeading
     
     
     
@@ -40,7 +40,7 @@ public struct InfoBox: View {
     
     // MARK: Internal Objects
     
-    enum InfoBoxStyle {
+    public enum InfoBoxStyle {
         case primaryLeading
         case secondaryLeading
         case primaryCenter

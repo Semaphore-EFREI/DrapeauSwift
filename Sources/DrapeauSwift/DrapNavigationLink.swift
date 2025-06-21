@@ -8,20 +8,20 @@
 import SwiftUI
 
 
-struct DrapNavigationLink: View {
+public struct DrapNavigationLink: View {
     
     // MARK: Attributes
     
-    var title: String
-    var icon: String
-    var value: String?
-    var isSelected: Bool = false
+    public var title: String
+    public var icon: String
+    public var value: String?
+    public var isSelected: Bool = false
     
     
     
     // MARK: Views
     
-    var body: some View {
+    public var body: some View {
         HStack {
             leftView
             

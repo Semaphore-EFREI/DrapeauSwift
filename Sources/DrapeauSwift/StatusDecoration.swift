@@ -8,19 +8,19 @@
 import SwiftUI
 
 
-struct StatusDecoration: View {
+public struct StatusDecoration: View {
     
     // MARK: Attributes
     
-    var icon: String
-    var color: Color
-    var style: DecorationStyle
+    public var icon: String
+    public var color: Color
+    public var style: DecorationStyle
     
     
     
     // MARK: Views
     
-    var body: some View {
+    public var body: some View {
         Group {
             switch style {
             case .light:
@@ -72,7 +72,7 @@ struct StatusDecoration: View {
     
     // MARK: Internal Objects
     
-    enum DecorationStyle {
+    public enum DecorationStyle {
         case light
         case full
     }

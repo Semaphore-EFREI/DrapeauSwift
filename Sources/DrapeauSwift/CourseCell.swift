@@ -13,12 +13,12 @@ public struct CourseCell: View {
     
     // MARK: Attributes
     
-    var courseTitle: String
-    var description: String
-    var accentColor: Color
-    var icon: String
-    var firstButton: (() -> DrapButton)? = nil
-    var secondButton: (() -> DrapButton)? = nil
+    public var courseTitle: String
+    public var description: String
+    public var accentColor: Color
+    public var icon: String
+    public var firstButton: (() -> DrapButton)? = nil
+    public var secondButton: (() -> DrapButton)? = nil
     
     
     

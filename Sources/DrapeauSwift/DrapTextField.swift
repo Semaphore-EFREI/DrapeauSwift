@@ -8,19 +8,19 @@
 import SwiftUI
 
 
-struct DrapTextField: View {
+public struct DrapTextField: View {
     
     // MARK: Attributes
     
-    var label: String
-    @Binding var value: String
-    var isPassword: Bool = false
+    public var label: String
+    @Binding public var value: String
+    public var isPassword: Bool = false
     
     
     
     // MARK: View
     
-    var body: some View {
+    public var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("Étiquette")
                 .drapDescription()

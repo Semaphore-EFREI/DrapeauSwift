@@ -9,21 +9,21 @@ import SwiftUI
 import Constants
 
 
-struct DrapButton: View {
+public struct DrapButton: View {
     
     // MARK: Attributes
     
-    var icon: String?
-    var title: String
-    var style: DrapButtonStyle = .primary
-    var disabled: Bool = false
-    var action: () -> Void
+    public var icon: String?
+    public var title: String
+    public var style: DrapButtonStyle = .primary
+    public var disabled: Bool = false
+    public var action: () -> Void
     
     
     
     // MARK: Views
     
-    var body: some View {
+    public var body: some View {
         Button {
             action()
         } label: {
@@ -56,7 +56,7 @@ struct DrapButton: View {
     
     // MARK: Internal Objects
     
-    enum DrapButtonStyle {
+    public enum DrapButtonStyle {
         case primary
         case secondary
         case tertiary
@@ -118,7 +118,7 @@ struct DrapButton: View {
     }
     
     
-    struct DrapButtonParameters {
+    public struct DrapButtonParameters {
         var backgroundColor: Color
         var foregroundColor: Color
         var horizontalPadding: CGFloat = 20
