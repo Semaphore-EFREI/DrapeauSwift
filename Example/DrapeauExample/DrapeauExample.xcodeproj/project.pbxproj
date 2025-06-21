@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		3D6DC2732E06D9F00034AF94 /* DrapeauSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3D6DC2722E06D9F00034AF94 /* DrapeauSwift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		3D6DC2482E06D9150034AF94 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -52,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D6DC2732E06D9F00034AF94 /* DrapeauSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +117,7 @@
 			);
 			name = DrapeauExample;
 			packageProductDependencies = (
+				3D6DC2722E06D9F00034AF94 /* DrapeauSwift */,
 			);
 			productName = DrapeauExample;
 			productReference = 3D6DC2392E06D9140034AF94 /* DrapeauExample.app */;
@@ -195,6 +201,9 @@
 			);
 			mainGroup = 3D6DC2302E06D9140034AF94;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3D6DC2712E06D9F00034AF94 /* XCRemoteSwiftPackageReference "DrapeauSwift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3D6DC23A2E06D9140034AF94 /* Products */;
 			projectDirPath = "";
@@ -593,6 +602,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3D6DC2712E06D9F00034AF94 /* XCRemoteSwiftPackageReference "DrapeauSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Semaphore-EFREI/DrapeauSwift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3D6DC2722E06D9F00034AF94 /* DrapeauSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3D6DC2712E06D9F00034AF94 /* XCRemoteSwiftPackageReference "DrapeauSwift" */;
+			productName = DrapeauSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3D6DC2312E06D9140034AF94 /* Project object */;
 }

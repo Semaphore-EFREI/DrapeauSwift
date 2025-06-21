@@ -9,7 +9,7 @@ import SwiftUI
 import Constants
 
 
-struct CourseCell: View {
+public struct CourseCell: View {
     
     // MARK: Attributes
     
@@ -24,7 +24,7 @@ struct CourseCell: View {
     
     // MARK: View
     
-    var body: some View {
+    public var body: some View {
         VStack(spacing: 24) {
             courseInfoView
             buttonsView
