@@ -40,13 +40,15 @@ public struct CourseCell: View {
     public var body: some View {
         VStack(spacing: 24) {
             courseInfoView
-            buttonsView
+            if firstButton != nil || secondButton != nil {
+                buttonsView
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
-        .background(Color.drapSecondaryBackground)
+        //.background(Color.drapSecondaryBackground)
         .roundedCorners(style: .large)
-        .shinyOutline(shape: RoundedRectangle(cornerRadius: 32, style: .continuous), cornerRadius: 32)
+        .drapReflect(cornersStyle: .large, reflectStyle: .secondary)
     }
     
     
@@ -85,8 +87,7 @@ public struct CourseCell: View {
         CourseCell(courseTitle: "Cloud Computing Fundementals", description: "9 minutes pour signer", accentColor: .drapBlue, icon: "clock") {
             DrapButton(icon: "signature", title: "Signer") { }
         } secondButton: {
-            DrapButton(icon: "cloud", title: "Suspension", style: .tertiary) { }
+            DrapButton(icon: "cloud", title: "Suspension", kind: .secondary) { }
         }
-
     }
 }

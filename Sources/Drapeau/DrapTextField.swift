@@ -21,7 +21,7 @@ public struct DrapTextField: View {
     // MARK: View
     
     public var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 10) {
             Text("Étiquette")
                 .drapDescription()
                 .foregroundStyle(Color.drapTertiaryText)

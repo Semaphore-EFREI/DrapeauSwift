@@ -15,9 +15,22 @@ public struct DrapButton: View {
     
     public var icon: String?
     public var title: String
-    public var style: DrapButtonStyle = .primary
-    public var disabled: Bool = false
+    public var disabled: Bool
     public var action: () -> Void
+    
+    private var style: DrapButtonStyle
+    
+    
+    
+    // MARK: Init
+    
+    public init(icon: String? = nil, title: String, tint: Color = .drapBlue, kind: DrapButtonStyle.DrapButtonKind = .primary, disabled: Bool = false, action: @escaping () -> Void) {
+        self.icon = icon
+        self.title = title
+        self.disabled = disabled
+        self.action = action
+        self.style = DrapButtonStyle(kind: kind, tint: tint)
+    }
     
     
     
@@ -34,6 +47,7 @@ public struct DrapButton: View {
                 .frame(maxWidth: style.parameters.maxWidth, minHeight: style.parameters.minHeight)
                 .background(style.parameters.backgroundColor)
                 .roundedCorners(style: style.parameters.cornerStyle)
+                .buttonShadow(activated: style.kind == .small)
         }
         .buttonStyle(PlainButtonStyle())
         .disabled(disabled)
@@ -56,49 +70,47 @@ public struct DrapButton: View {
     
     // MARK: Internal Objects
     
-    public enum DrapButtonStyle {
-        case primary
-        case secondary
-        case tertiary
-        case primaryRounded
-        case secondaryRounded
-        case small
-        case secondarySmall
+    public struct DrapButtonStyle {
+        
+        // MARK: Attributes
+        
+        public let kind: DrapButtonKind
+        public let tint: Color
         
         
         var parameters: DrapButtonParameters {
-            return switch self {
+            return switch self.kind {
             case .primary:
                 DrapButtonParameters(
-                    backgroundColor: .drapBlue,
+                    backgroundColor: tint,
                     foregroundColor: .drapInverseText
                 )
             case .secondary:
                 DrapButtonParameters(
                     backgroundColor: .drapSecondaryBackground,
-                    foregroundColor: .drapBlue
+                    foregroundColor: tint
                 )
             case .tertiary:
                 DrapButtonParameters(
                     backgroundColor: .drapPrimaryBackground,
-                    foregroundColor: .drapBlue
+                    foregroundColor: tint
                 )
             case .primaryRounded:
                 DrapButtonParameters(
-                    backgroundColor: .drapBlue,
+                    backgroundColor: tint,
                     foregroundColor: .drapInverseText,
                     cornerStyle: .medium
                 )
             case .secondaryRounded:
                 DrapButtonParameters(
                     backgroundColor: .drapSecondaryBackground,
-                    foregroundColor: .drapBlue,
+                    foregroundColor: tint,
                     cornerStyle: .medium
                 )
             case .small:
                 DrapButtonParameters(
                     backgroundColor: .drapSecondaryBackground,
-                    foregroundColor: .drapBlue,
+                    foregroundColor: tint,
                     horizontalPadding: 12,
                     verticalPadding: 6,
                     maxWidth: .none,
@@ -107,7 +119,7 @@ public struct DrapButton: View {
             case .secondarySmall:
                 DrapButtonParameters(
                     backgroundColor: .clear,
-                    foregroundColor: .drapBlue,
+                    foregroundColor: tint,
                     horizontalPadding: 0,
                     verticalPadding: 6,
                     maxWidth: .none,
@@ -115,17 +127,37 @@ public struct DrapButton: View {
                 )
             }
         }
-    }
-    
-    
-    public struct DrapButtonParameters {
-        var backgroundColor: Color
-        var foregroundColor: Color
-        var horizontalPadding: CGFloat = 20
-        var verticalPadding: CGFloat = 12
-        var maxWidth: CGFloat? = .infinity
-        var minHeight: CGFloat = 46
-        var cornerStyle: RoundedCornersStyle = .regular
+        
+        
+        // MARK: Init
+        
+        public init(kind: DrapButtonKind, tint: Color) {
+            self.kind = kind
+            self.tint = tint
+        }
+        
+        
+        // MARK: Inner Objects
+        
+        public enum DrapButtonKind {
+            case primary
+            case secondary
+            case tertiary
+            case primaryRounded
+            case secondaryRounded
+            case small
+            case secondarySmall
+        }
+        
+        struct DrapButtonParameters {
+            var backgroundColor: Color
+            var foregroundColor: Color
+            var horizontalPadding: CGFloat = 20
+            var verticalPadding: CGFloat = 12
+            var maxWidth: CGFloat? = .infinity
+            var minHeight: CGFloat = 46
+            var cornerStyle: RoundedCornersStyle = .regular
+        }
     }
 }
 
@@ -134,9 +166,15 @@ public struct DrapButton: View {
 
 
 #Preview {
-    PreviewScaffold {
-        DrapButton(icon: "signature", title: "Hello") {
-            
+    PreviewScaffold(backgroundColor: .drapQuaternaryBackground) {
+        VStack(spacing: 24) {
+            DrapButton(icon: "signature", title: "Hello") {}
+            DrapButton(icon: "signature", title: "Hello", kind: .secondary) {}
+            DrapButton(icon: "signature", title: "Hello", kind: .tertiary) {}
+            DrapButton(icon: "signature", title: "Hello", kind: .primaryRounded) {}
+            DrapButton(icon: "signature", title: "Hello", kind: .secondaryRounded) {}
+            DrapButton(icon: "signature", title: "Hello", kind: .small) {}
+            DrapButton(icon: "signature", title: "Hello", kind: .secondarySmall) {}
         }
     }
 }

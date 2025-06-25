@@ -9,7 +9,15 @@ import SwiftUI
 
 
 public extension View {
-    func drapShadow() -> some View {
-        self.shadow(color: Color(hue: 0, saturation: 0, brightness: 0, opacity: 0.12), radius: 16)
+    func primaryShadow() -> some View {
+        self.shadow(color: Color(hue: 0, saturation: 0, brightness: 0, opacity: 0.32), radius: 16)
+    }
+    
+    func secondaryShadow() -> some View {
+        self.shadow(color: Color(hue: 0, saturation: 0, brightness: 0, opacity: 0.06), radius: 16)
+    }
+    
+    func buttonShadow(activated: Bool = true) -> some View {
+        self.shadow(color: Color(hue: 0, saturation: 0, brightness: 0, opacity: activated ? 0.24 : 0.0), radius: 12)
     }
 }

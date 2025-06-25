@@ -48,7 +48,7 @@ public extension Text {
 /// Peut s'appliquer à n'importe quelle vue
 public extension View {
     func drapTitle() -> some View {
-        self.font(Font.custom("Montserrat", size: 24)).fontWeight(.semibold)
+        self.font(Font.custom("Montserrat", size: 28)).fontWeight(.semibold)
     }
     
     func drapPageTitle() -> some View {
