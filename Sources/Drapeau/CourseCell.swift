@@ -46,7 +46,7 @@ public struct CourseCell: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(16)
-        //.background(Color.drapSecondaryBackground)
+        .background(Color.drapPrimaryBackground)
         .roundedCorners(style: .large)
         .drapReflect(cornersStyle: .large, reflectStyle: .secondary)
     }

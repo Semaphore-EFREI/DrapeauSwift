@@ -36,8 +36,12 @@ public extension Color {
         return Color("DPurple", bundle: .module)
     }
     
+    static var drapGray: Color {
+        return Color("DGray", bundle: .module)
+    }
+    
     static var drapDarkGray: Color {
-        return Color("DDrakGreen", bundle: .module)
+        return Color("DDarkGray", bundle: .module)
     }
     
     static var drapBlack: Color {

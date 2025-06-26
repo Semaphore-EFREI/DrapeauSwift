@@ -53,14 +53,7 @@ struct DrapNavigationStack<Content: View>: View {
             
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        profileButtonAction()
-                    } label: {
-                        ZStack {
-                            Image(systemName: "person.crop.circle.fill")
-                                .drapPageSubtitle()
-                        }
-                    }
+                    profileButton
                 }
                 
                 if #available(iOS 26.0, *) {
@@ -77,6 +70,23 @@ struct DrapNavigationStack<Content: View>: View {
         }
         .padding(.horizontal, 8)
         .background(backgroundColor)    // L'espacement de 8 laisse un vide sur les cotés, qu'il faut remplir avec .background()
+    }
+    
+    
+    
+    var profileButton: some View {
+        Button {
+            profileButtonAction()
+        } label: {
+            if #available(iOS 26.0, *) {
+                Image(systemName: "person.crop.circle.fill")
+                    .drapPageSubtitle()
+            } else {
+                Image(systemName: "person.crop.circle.fill")
+                    .drapPageSubtitle()
+                    .foregroundStyle(Color.drapBlue)
+            }
+        }
     }
 }
 

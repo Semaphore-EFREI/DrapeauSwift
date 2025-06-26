@@ -39,6 +39,12 @@ public extension View {
                     .stroke(strokeColor, lineWidth: strokeWidth)
             }
     }
+    
+    
+    func unevenRoundedCorners(topLeading: CGFloat, topTrailing: CGFloat, bottomTrailing: CGFloat, bottomLeading: CGFloat) -> some View {
+        self
+            .clipShape(.rect(topLeadingRadius: topLeading, bottomLeadingRadius: bottomLeading, bottomTrailingRadius: bottomTrailing, topTrailingRadius: topTrailing, style: .continuous))
+    }
 }
 
 
@@ -47,5 +53,6 @@ public enum RoundedCornersStyle: CGFloat {
     case regular = 16
     case medium = 23
     case large = 32
+    case extraLarge = 38
     case round = 1000        // Valeur excessive pour que les coins soient ronds peu importe la hauteur de l'élément
 }

@@ -20,7 +20,10 @@ let package = Package(
             dependencies: ["Constants"]
         ),
         .target(
-            name: "Constants"
+            name: "Constants",
+            resources: [
+                .process("Assets.xcassets")
+            ]
         ),
         .testTarget(
             name: "DrapeauSwiftTests",

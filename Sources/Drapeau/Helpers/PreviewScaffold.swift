@@ -13,6 +13,8 @@ public struct PreviewScaffold<Content: View>: View {
     
     // MARK: Attributes
     
+    @StateObject var metrics = ScreenMetrics()
+    
     var backgroundColor: Color
     var disablePadding: Bool
     let content: Content
@@ -36,12 +38,26 @@ public struct PreviewScaffold<Content: View>: View {
     // MARK: View
 
     public var body: some View {
-        ZStack {
-            backgroundColor
-                .ignoresSafeArea()
+        GeometryReader { geo in
+            let safeInsets = geo.safeAreaInsets
             
-            content
-                .padding(.horizontal, disablePadding ? 0 : 16)
+            ZStack {
+                backgroundColor
+                    .ignoresSafeArea()
+                    .onAppear {
+                        metrics.update(from: geo, safeInsets: safeInsets)
+                    }
+                    .onChange(of: geo.size) {
+                        metrics.update(from: geo, safeInsets: safeInsets)
+                    }
+                    .onChange(of: geo.safeAreaInsets) {
+                        metrics.update(from: geo, safeInsets: safeInsets)
+                    }
+                
+                content
+                    .padding(.horizontal, disablePadding ? 0 : 24)
+                    .environmentObject(metrics)
+            }
         }
     }
 }
