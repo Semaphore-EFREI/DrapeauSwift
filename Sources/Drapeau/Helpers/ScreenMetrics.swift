@@ -41,8 +41,8 @@ public class ScreenMetrics: ObservableObject {
         let newHeight = geometry.size.height
         
         if width != newWidth || height != newHeight || safeAreaInsets != safeInsets {
-            width = newWidth
-            height = newHeight
+            width = newWidth + safeInsets.leading + safeInsets.trailing
+            height = newHeight + safeInsets.top + safeInsets.bottom
             safeAreaInsets = safeInsets
        }
     }
@@ -71,6 +71,7 @@ public class ScreenMetrics: ObservableObject {
         case "iPhone13,4": 53.33                // iPhone 12 Pro Max
             
         case "iPhone17,1": 62.0                 // iPhone 16 Pro
+        case "iPhone17,5": 47.33                // iPhone 16e
         default: 44.0
         }
     }

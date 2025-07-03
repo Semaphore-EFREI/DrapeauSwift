@@ -8,7 +8,7 @@
 import SwiftUI
 
 
-struct CourseRow: View {
+public struct CourseRow: View {
     
     // MARK: Attributes
     
@@ -20,9 +20,21 @@ struct CourseRow: View {
     
     
     
+    // MARK: Init
+    
+    public init(title: String, time: String, classroom: String, color: Color, isSelected: Bool) {
+        self.title = title
+        self.time = time
+        self.classroom = classroom
+        self.color = color
+        self.isSelected = isSelected
+    }
+    
+    
+    
     // MARK: View
     
-    var body: some View {
+    public var body: some View {
         HStack(spacing: 16) {
             statusIndicator
             courseInfos

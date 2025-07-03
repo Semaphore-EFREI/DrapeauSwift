@@ -6,9 +6,10 @@
 //
 
 import SwiftUI
+import Constants
 
 
-struct DrapNavigationStack<Content: View>: View {
+public struct DrapNavigationStack<Content: View>: View {
     
     // MARK: Attributes
     
@@ -21,7 +22,7 @@ struct DrapNavigationStack<Content: View>: View {
     
     // MARK: Init
     
-    init(title: String, backgroundColor: Color = .drapPrimaryBackground, profileButtonAction: @escaping () -> (), @ViewBuilder content: () -> Content) {
+    public init(title: String, backgroundColor: Color = .drapPrimaryBackground, profileButtonAction: @escaping () -> (), @ViewBuilder content: () -> Content) {
         self.title = title
         self.backgroundColor = backgroundColor
         self.profileButtonAction = profileButtonAction
@@ -39,7 +40,7 @@ struct DrapNavigationStack<Content: View>: View {
     
     // MARK: View
     
-    var body: some View {
+    public var body: some View {
         NavigationStack {
             ZStack {
                 backgroundColor.ignoresSafeArea()

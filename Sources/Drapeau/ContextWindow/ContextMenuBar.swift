@@ -7,12 +7,13 @@
 
 import SwiftUI
 
-struct ContextMenuBar: View {
+
+public struct ContextMenuBar: View {
     
     // MARK: Attributes
     
-    var leading: (() -> DrapButton)?
-    var trailing: (() -> DrapButton)?
+    public var leading: (() -> DrapButton)?
+    public var trailing: (() -> DrapButton)?
     
     
     
@@ -27,7 +28,7 @@ struct ContextMenuBar: View {
     
     // MARK: View
     
-    var body: some View {
+    public var body: some View {
         HStack {
             if let leading = leading {
                 leading()
