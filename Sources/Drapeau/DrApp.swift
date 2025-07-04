@@ -86,6 +86,9 @@ public struct DrApp<Content: View>: View {
                 }
             }
         }
+        .onChange(of: drapManager.isPresented) { oldValue, newValue in
+            print(newValue)
+        }
     }
 }
 
