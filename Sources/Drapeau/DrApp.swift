@@ -63,7 +63,7 @@ public struct DrApp<Content: View>: View {
     
     var contextView: some View {
         ZStack {
-            if drapManager.isPresented, drapManager.firstWindow != nil && drapManager.secondWindow != nil {
+            if drapManager.isPresented, drapManager.firstWindow != nil || drapManager.secondWindow != nil {
                 Color.black.opacity(0.4)
                     .ignoresSafeArea()
                     .transition(.opacity)
@@ -85,9 +85,6 @@ public struct DrApp<Content: View>: View {
                     ))
                 }
             }
-        }
-        .onChange(of: drapManager.isPresented) { oldValue, newValue in
-            print(newValue)
         }
     }
 }
