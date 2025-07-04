@@ -51,11 +51,12 @@ public struct DrApp<Content: View>: View {
                     }
                 
                 content
-                    .environmentObject(metrics)
                 
                 contextView
                     .ignoresSafeArea()
             }
+            .environmentObject(metrics)
+            .environmentObject(drapManager)
         }
     }
     
