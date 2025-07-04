@@ -16,16 +16,18 @@ public struct DrapNavigationStack<Content: View>: View {
     var title: String
     var backgroundColor: Color
     var profileButtonAction: () -> ()
+    var refreshAction: () -> ()
     var content: Content
     
     
     
     // MARK: Init
     
-    public init(title: String, backgroundColor: Color = .drapPrimaryBackground, profileButtonAction: @escaping () -> (), @ViewBuilder content: () -> Content) {
+    public init(title: String, backgroundColor: Color = .drapPrimaryBackground, profileButtonAction: @escaping () -> () = {}, refreshAction: @escaping () -> () = {}, @ViewBuilder content: () -> Content) {
         self.title = title
         self.backgroundColor = backgroundColor
         self.profileButtonAction = profileButtonAction
+        self.refreshAction = refreshAction
         self.content = content()
         
         
@@ -49,6 +51,9 @@ public struct DrapNavigationStack<Content: View>: View {
                     content
                         .padding()
                         .padding(.top, 8)
+                }
+                .refreshable {
+                    refreshAction()
                 }
             }
             
