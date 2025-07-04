@@ -65,7 +65,7 @@ public struct ContextWindow<Content: View>: View {
         .frame(height: metrics.height / 2)
         .unevenRoundedCorners(topLeading: RoundedCornersStyle.extraLarge.rawValue, topTrailing: RoundedCornersStyle.extraLarge.rawValue, bottomTrailing: metrics.borderRadius - 8, bottomLeading: metrics.borderRadius - 8)
         .padding(8)
-        .ignoresSafeArea()
+        //.ignoresSafeArea()
     }
     
     
