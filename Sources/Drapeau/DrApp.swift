@@ -53,7 +53,7 @@ public struct DrApp<Content: View>: View {
                 content
                 
                 contextView
-                    //.ignoresSafeArea()
+                    .ignoresSafeArea()
             }
             .environmentObject(metrics)
             .environmentObject(drapManager)
