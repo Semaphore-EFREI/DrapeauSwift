@@ -53,7 +53,6 @@ public struct DrApp<Content: View>: View {
                 content
                 
                 contextView
-                    .ignoresSafeArea()
             }
             .environmentObject(metrics)
             .environmentObject(drapManager)
@@ -71,19 +70,24 @@ public struct DrApp<Content: View>: View {
                         drapManager.dismiss()
                     }
                 
-                if let contextWindow = drapManager.firstWindow {
-                    contextWindow
-                        .transition(.asymmetric(
-                            insertion: .move(edge: drapManager.inDirection),
-                            removal: .move(edge: drapManager.outDirection)
-                        ))
-                } else if let contextWindow = drapManager.secondWindow {
-                    contextWindow
-                        .transition(.asymmetric(
-                            insertion: .move(edge: drapManager.inDirection),
-                            removal: .move(edge: drapManager.outDirection)
-                    ))
+                VStack {
+                    Spacer()
+                    
+                    if let contextWindow = drapManager.firstWindow {
+                        contextWindow
+                            .transition(.asymmetric(
+                                insertion: .move(edge: drapManager.inDirection),
+                                removal: .move(edge: drapManager.outDirection)
+                            ))
+                    } else if let contextWindow = drapManager.secondWindow {
+                        contextWindow
+                            .transition(.asymmetric(
+                                insertion: .move(edge: drapManager.inDirection),
+                                removal: .move(edge: drapManager.outDirection)
+                            ))
+                    }
                 }
+                .ignoresSafeArea()
             }
         }
     }
