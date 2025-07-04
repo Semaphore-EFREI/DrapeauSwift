@@ -39,9 +39,11 @@ public class DrapContextWindowManager: ObservableObject {
                 }
             // Si aucun menu n'est présent à l'écran
             } else {
-                inDirection = .bottom
-                firstWindow = AnyView(content)
-                secondWindow = nil
+                withAnimation {
+                    inDirection = .bottom
+                    firstWindow = AnyView(content)
+                    secondWindow = nil
+                }
             }
         }
     }
