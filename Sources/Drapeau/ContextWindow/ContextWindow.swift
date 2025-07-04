@@ -50,6 +50,8 @@ public struct ContextWindow<Content: View>: View {
         ZStack {
             if style == .custom {
                 customView
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Color.drapPrimaryBackground)
             } else {
                 structuredView
             }
@@ -134,6 +136,7 @@ public struct ContextWindow<Content: View>: View {
         VStack {
             Spacer()
             
+            /*
             ContextWindow<Text>(image: "iPhone sur Balise", description: "Appuyez sur “Scanner la balise” et collez votre appareil sur celle-ci") {
                 ContextMenuBar {
                     DrapButton(icon: "chevron.left", title: "Annuler", tint: .drapPrimaryText, kind: .small) {
@@ -149,7 +152,12 @@ public struct ContextWindow<Content: View>: View {
                     print("")
                 }
             }
-
+            */
+            ContextWindow(menuBar: {
+            ContextMenuBar()
+            }, content: {
+                Text("test")
+            })
 
         }
         .ignoresSafeArea()
