@@ -50,7 +50,7 @@ public struct ContextWindow<Content: View>: View {
         ZStack {
             if style == .custom {
                 customView
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    //.frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.drapPrimaryBackground)
             } else {
                 structuredView
