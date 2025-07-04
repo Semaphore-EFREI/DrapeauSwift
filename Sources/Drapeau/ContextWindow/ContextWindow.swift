@@ -85,7 +85,7 @@ public struct ContextWindow<Content: View>: View {
         
         return ZStack {
             if let image, let description, let actionButton {
-                Image(image, bundle: ProjectBundle.module)
+                Image(image)
                     .resizable()
                     .scaledToFill()
                     .frame(width: dimensions.width, height: dimensions.height)
