@@ -53,6 +53,7 @@ public struct DrApp<Content: View>: View {
                 content
                 
                 contextView
+                    .ignoresSafeArea()
             }
             .environmentObject(metrics)
             .environmentObject(drapManager)
@@ -64,7 +65,6 @@ public struct DrApp<Content: View>: View {
         ZStack {
             if drapManager.isPresented, drapManager.firstWindow != nil || drapManager.secondWindow != nil {
                 Color.black.opacity(0.4)
-                    .ignoresSafeArea()
                     .transition(.opacity)
                     .onTapGesture {
                         drapManager.dismiss()
@@ -87,7 +87,6 @@ public struct DrApp<Content: View>: View {
                             ))
                     }
                 }
-                .ignoresSafeArea()
             }
         }
     }
