@@ -8,7 +8,7 @@
 import SwiftUI
 import Constants
 
-
+/*
 public struct ContextWindow<Content: View>: View {
     
     // MARK: Attributes
@@ -63,7 +63,7 @@ public struct ContextWindow<Content: View>: View {
             
         }
         .frame(height: metrics.height / 2)
-        .unevenRoundedCorners(topLeading: RoundedCornersStyle.extraLarge.rawValue, topTrailing: RoundedCornersStyle.extraLarge.rawValue, bottomTrailing: metrics.borderRadius - 8, bottomLeading: metrics.borderRadius - 8)
+        //.unevenRoundedCorners(topLeading: RoundedCornersStyle.extraLarge.rawValue, topTrailing: RoundedCornersStyle.extraLarge.rawValue, bottomTrailing: metrics.borderRadius - 8, bottomLeading: metrics.borderRadius - 8)
         .padding(8)
         .ignoresSafeArea()
     }
@@ -163,3 +163,4 @@ public struct ContextWindow<Content: View>: View {
         .ignoresSafeArea()
     }
 }
+*/

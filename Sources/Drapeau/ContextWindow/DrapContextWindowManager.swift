@@ -8,6 +8,7 @@
 import SwiftUI
 
 
+/*
 public class DrapContextWindowManager: ObservableObject {
     
     // MARK: Attributes
@@ -81,3 +82,4 @@ public class DrapContextWindowManager: ObservableObject {
         case forward, backward
     }
 }
+*/

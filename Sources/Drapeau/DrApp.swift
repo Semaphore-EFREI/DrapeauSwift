@@ -9,6 +9,7 @@ import SwiftUI
 import Constants
 
 
+/*
 public struct DrApp<Content: View>: View {
     
     // MARK: Attributes
@@ -43,12 +44,12 @@ public struct DrApp<Content: View>: View {
                     .onAppear {
                         metrics.update(from: geo, safeInsets: safeInsets)
                     }
-                    .onChange(of: geo.size) {
+                    /*.onChange(of: geo.size) {
                         metrics.update(from: geo, safeInsets: safeInsets)
                     }
                     .onChange(of: geo.safeAreaInsets) {
                         metrics.update(from: geo, safeInsets: safeInsets)
-                    }
+                    }*/
                 
                 content
                 
@@ -101,3 +102,4 @@ public struct DrApp<Content: View>: View {
         Text("Drapeau")
     }
 }
+*/

@@ -56,7 +56,7 @@ public struct DrapTextField: View {
     var promptView: Text {
         Text("TextField")
             .drapBody()
-            .foregroundStyle(Color.drapQuaternaryText)
+            //.foregroundStyle(Color.drapQuaternaryText)
     }
 }
 
@@ -66,9 +66,9 @@ public struct DrapTextField: View {
 
 
 #Preview {
-    @Previewable @State var value = ""
+    //@Previewable @State var value = ""
     
     PreviewScaffold {
-        DrapTextField(label: "Étiquette", value: $value, isPassword: true)
+        DrapTextField(label: "Étiquette", value: .constant(""), isPassword: true)
     }
 }

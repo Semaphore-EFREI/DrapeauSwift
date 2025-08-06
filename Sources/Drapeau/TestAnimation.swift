@@ -61,7 +61,7 @@ struct TestAnimation: View {
                 }
             }
             
-            DrapButton(title: "Supprimer la vue", tint: .drapRed, kind: .tertiary) {
+            DrapButton(title: "Supprimer la vue") {
                 withAnimation {
                     inEdge = .bottom
                     outEdge = .bottom

@@ -14,7 +14,7 @@ public struct PreviewScaffold<Content: View>: View {
     // MARK: Attributes
     
     @StateObject var metrics = ScreenMetrics()
-    @StateObject var drapManager = DrapContextWindowManager()
+    //@StateObject var drapManager = DrapContextWindowManager()
     
     var backgroundColor: Color
     var disablePadding: Bool
@@ -48,17 +48,17 @@ public struct PreviewScaffold<Content: View>: View {
                     .onAppear {
                         metrics.update(from: geo, safeInsets: safeInsets)
                     }
-                    .onChange(of: geo.size) {
+                    /*.onChange(of: geo.size) {
                         metrics.update(from: geo, safeInsets: safeInsets)
                     }
                     .onChange(of: geo.safeAreaInsets) {
                         metrics.update(from: geo, safeInsets: safeInsets)
-                    }
+                    }*/
                 
                 content
                     .padding(.horizontal, disablePadding ? 0 : 24)
                     .environmentObject(metrics)
-                    .environmentObject(drapManager)
+                    //.environmentObject(drapManager)
             }
         }
     }

@@ -8,6 +8,7 @@
 import SwiftUI
 
 
+/*
 public struct ContextMenuBar: View {
     
     // MARK: Attributes
@@ -50,9 +51,10 @@ public struct ContextMenuBar: View {
 
 #Preview {
     ContextMenuBar(leading: {
-        DrapButton(title: "Button", kind: .small) {
+        DrapButton(title: "Button") {
             print("")
         }
     })
 
 }
+*/

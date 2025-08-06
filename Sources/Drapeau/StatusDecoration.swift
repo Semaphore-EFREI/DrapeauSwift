@@ -37,7 +37,7 @@ public struct StatusDecoration: View {
             Circle()
                 .foregroundStyle(Color.clear)
                 .frame(width: 52, height: 52)
-                .customRoundedCornersWithBorder(radius: 52, strokeWidth: 4, strokeColor: color.opacity(0.34))
+                //.customRoundedCornersWithBorder(radius: 52, strokeWidth: 4, strokeColor: color.opacity(0.34))
             
             Image(systemName: icon)
                 .lightDecorationIcon()

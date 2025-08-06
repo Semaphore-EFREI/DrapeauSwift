@@ -14,10 +14,20 @@ public extension View {
     }
     
     func secondaryShadow() -> some View {
-        self.shadow(color: Color(hue: 0, saturation: 0, brightness: 0, opacity: 0.06), radius: 16)
+        self.shadow(color: Color(hue: 0, saturation: 0, brightness: 0, opacity: 0.06), radius: 24)
     }
     
     func buttonShadow(activated: Bool = true) -> some View {
         self.shadow(color: Color(hue: 0, saturation: 0, brightness: 0, opacity: activated ? 0.24 : 0.0), radius: 12)
+    }
+    
+    func courseCardShadow() -> some View {
+        self.shadow(color: Color(hue: 0, saturation: 0, brightness: 0, opacity: 0.06), radius: 8, y: 4)
+    }
+    
+    func activeCourseCardShadow() -> some View {
+        self
+            .shadow(color: Color(hue: 0, saturation: 0, brightness: 0, opacity: 0.4), radius: 8, y: 4)
+            .shadow(color: Color(hue: 0, saturation: 0, brightness: 0, opacity: 0.8), radius: 16, y: 8)
     }
 }

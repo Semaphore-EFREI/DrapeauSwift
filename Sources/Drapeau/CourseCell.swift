@@ -9,6 +9,7 @@ import SwiftUI
 import Constants
 
 
+/*
 public struct CourseCell: View {
     
     // MARK: Attributes
@@ -48,7 +49,7 @@ public struct CourseCell: View {
         .padding(16)
         .background(Color.drapPrimaryBackground)
         .roundedCorners(style: .large)
-        .drapReflect(cornersStyle: .large, reflectStyle: .secondary)
+        //.drapReflect(cornersStyle: .large, reflectStyle: .secondary)
     }
     
     
@@ -87,7 +88,8 @@ public struct CourseCell: View {
         CourseCell(courseTitle: "Cloud Computing Fundementals", description: "9 minutes pour signer", accentColor: .drapBlue, icon: "clock") {
             DrapButton(icon: "signature", title: "Signer") { }
         } secondButton: {
-            DrapButton(icon: "cloud", title: "Suspension", kind: .secondary) { }
+            DrapButton(icon: "cloud", title: "Suspension") { }
         }
     }
 }
+*/

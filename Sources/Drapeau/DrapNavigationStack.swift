@@ -6,9 +6,15 @@
 //
 
 import SwiftUI
+#if os(iOS)
+import UIKit
+#elseif os(macOS)
+import AppKit
+#endif
 import Constants
 
 
+/*
 public struct DrapNavigationStack<Content: View>: View {
     
     // MARK: Attributes
@@ -30,12 +36,19 @@ public struct DrapNavigationStack<Content: View>: View {
         self.refreshAction = refreshAction
         self.content = content()
         
-        
+        #if os(iOS)
         let montserratBig = UIFont(name: "Montserrat-SemiBold", size: 28) ?? UIFont.systemFont(ofSize: 28)
         let montserratSmall = UIFont(name: "Montserrat-SemiBold", size: 17) ?? UIFont.systemFont(ofSize: 15)
         
         UINavigationBar.appearance().largeTitleTextAttributes = [.font: montserratBig]
         UINavigationBar.appearance().titleTextAttributes = [.font: montserratSmall]
+        #elseif os(macOS)
+        let montserratBig = NSFont(name: "Montserrat-SemiBold", size: 28) ?? NSFont.systemFont(ofSize: 28)
+        let montserratSmall = NSFont(name: "Montserrat-SemiBold", size: 17) ?? NSFont.systemFont(ofSize: 15)
+        
+        UINavigationBar.appearance().largeTitleTextAttributes = [.font: montserratBig]
+        UINavigationBar.appearance().titleTextAttributes = [.font: montserratSmall]
+        #endif
     }
     
     
@@ -43,7 +56,7 @@ public struct DrapNavigationStack<Content: View>: View {
     // MARK: View
     
     public var body: some View {
-        NavigationStack {
+        NavigationView {
             ZStack {
                 backgroundColor.ignoresSafeArea()
                 
@@ -118,3 +131,4 @@ public struct DrapNavigationStack<Content: View>: View {
 
     }
 }
+*/
