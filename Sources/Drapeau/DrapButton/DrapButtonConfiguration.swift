@@ -42,7 +42,8 @@ public enum DrapButtonBorderShape {
     case rounded
     
     
-    var style: RoundedCornersStyle {
+    /// Corrélation entre BorderShape et CornersStyle
+    var cornersStyle: RoundedCornersStyle {
         return switch self {
         case .regular:
             .regular
@@ -67,6 +68,17 @@ public enum DrapButtonFormat {
 
 
 
+extension EnvironmentValues {
+    @Entry var drapButtonRole: DrapButtonRole = .primary
+    @Entry var drapButtonBorderShape: DrapButtonBorderShape = .regular
+    @Entry var drapButtonFormat: DrapButtonFormat = .capsule
+    @Entry var drapButtonTint: Color = .drapBlue
+}
+
+
+/*
+// Ancienne structure
+ 
 struct DrapButtonRoleKey: EnvironmentKey {
     static let defaultValue: DrapButtonRole = .primary
 }
@@ -80,50 +92,8 @@ extension EnvironmentValues {
         }
     }
 }
+*/
 
 
-struct DrapButtonBorderShapeKey: EnvironmentKey {
-    static let defaultValue: DrapButtonBorderShape = .regular
-}
-
-extension EnvironmentValues {
-    public var drapButtonBorderShape: DrapButtonBorderShape {
-        get {
-            self[DrapButtonBorderShapeKey.self]
-        } set {
-            self[DrapButtonBorderShapeKey.self] = newValue
-        }
-    }
-}
-
-
-struct DrapButtonFormatKey: EnvironmentKey {
-    static let defaultValue: DrapButtonFormat = .capsule
-}
-
-extension EnvironmentValues {
-    public var drapButtonFormat: DrapButtonFormat {
-        get {
-            self[DrapButtonFormatKey.self]
-        } set {
-            self[DrapButtonFormatKey.self] = newValue
-        }
-    }
-}
-
-
-struct DrapButtonTintKey: EnvironmentKey {
-    static let defaultValue: Color = .drapBlue
-}
-
-extension EnvironmentValues {
-    public var drapButtonTint: Color {
-        get {
-            self[DrapButtonTintKey.self]
-        } set {
-            self[DrapButtonTintKey.self] = newValue
-        }
-    }
-}
 
 

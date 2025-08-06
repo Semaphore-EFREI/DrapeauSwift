@@ -13,6 +13,10 @@ public struct DrapButton<Style: DrapButtonStyle>: View {
     
     // MARK: Attributes
     
+    @Environment(\.drapButtonTint) var tint
+    @Environment(\.drapButtonRole) var role
+    @Environment(\.drapButtonBorderShape) var borderShape
+    
     var disabled: Bool
     var action: () -> Void
     
@@ -49,7 +53,7 @@ public struct DrapButton<Style: DrapButtonStyle>: View {
         } label: {
             style.makeBody(configuration: config)
         }
-        .buttonStyle(PlainButtonStyle())
+        .buttonStyle(.plain)
         .disabled(disabled)
     }
 }
@@ -71,14 +75,30 @@ public extension DrapButton where Style == DefaultDrapButtonStyle {
         VStack(spacing: 24) {
             DrapButton(icon: "signature", title: "Hello") {}
             DrapButton(icon: "signature", title: "Hello") {}
+                .drapButtonRole(.secondary)
+            DrapButton(icon: "signature", title: "Hello") {}
                 .drapButtonRole(.tertiary)
-                .drapButtonTint(.drapBlack)
             DrapButton(icon: "signature", title: "Hello") {}
+                .drapButtonBorderShape(.rounded)
             DrapButton(icon: "signature", title: "Hello") {}
+                .drapButtonRole(.secondary)
+                .drapButtonBorderShape(.rounded)
             DrapButton(icon: "signature", title: "Hello") {}
+                .drapButtonRole(.tertiary)
+                .drapButtonBorderShape(.rounded)
             DrapButton(icon: "signature", title: "Hello") {}
+                .style(.condensed)
             DrapButton(icon: "signature", title: "Hello") {}
+                .style(.condensed)
+                .drapButtonFormat(.mini)
             DrapButton(icon: "signature", title: "Hello") {}
+                .style(.actionBar)
+            DrapButton(icon: "signature", title: "Hello") {}
+                .style(.actionBar)
+                .drapButtonFormat(.circle)
+            DrapButton(icon: "signature", title: "Hello") {}
+                .style(.actionBar)
+                .drapButtonFormat(.mini)
         }
     }
 }
