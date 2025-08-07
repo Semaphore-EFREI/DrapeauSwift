@@ -11,7 +11,7 @@ import UIKit
 #elseif os(macOS)
 import AppKit
 #endif
-import Constants
+import Styles
 
 
 /*

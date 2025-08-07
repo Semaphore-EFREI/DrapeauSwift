@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Constants
+import Styles
 
 
 public struct PreviewScaffold<Content: View>: View {

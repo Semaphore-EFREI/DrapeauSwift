@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Constants
+import Styles
 
 
 public struct DrapButtonConfiguration {
@@ -14,7 +14,7 @@ public struct DrapButtonConfiguration {
     var icon: String?
     
     // iOS 26 +
-    var glassEffect: Bool = false
+    var glassEffect: Bool = true
 }
 
 
@@ -33,35 +33,16 @@ public enum DrapButtonRole {
 }
 
 
-/// Style n'ayant d'effet que sur iOS 18 - (iOS 26 + ayant capsule dans tous les cas).
-@MainActor
-public enum DrapButtonBorderShape {
-    /// Coins légèrements arrondis (n'a aucun effet sur iOS 26 +)
-    case regular
-    /// Coins ronds
-    case rounded
-    
-    
-    /// Corrélation entre BorderShape et CornersStyle
-    var cornersStyle: RoundedCornersStyle {
-        return switch self {
-        case .regular:
-            .regular
-        case .rounded:
-            .round
-        }
-    }
-}
-
-
 @MainActor
 public enum DrapButtonFormat {
+    /// Bouton avec des coins légèrements arrondis
+    case standard
     /// Bouton en forme de capsule
     case capsule
     /// Bouton en forme de cercle
     case circle
-    /// Bouton simple sans fond
-    case mini
+    /// Bouton en sans fond
+    case simple
 }
 
 
@@ -70,9 +51,9 @@ public enum DrapButtonFormat {
 
 extension EnvironmentValues {
     @Entry var drapButtonRole: DrapButtonRole = .primary
-    @Entry var drapButtonBorderShape: DrapButtonBorderShape = .regular
-    @Entry var drapButtonFormat: DrapButtonFormat = .capsule
+    @Entry var drapButtonFormat: DrapButtonFormat = .standard
     @Entry var drapButtonTint: Color = .drapBlue
+    @Entry var drapButtonExpand: Bool = false
 }
 
 

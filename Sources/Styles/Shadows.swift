@@ -20,7 +20,7 @@ public extension View {
     func buttonShadow(activated: Bool = true) -> some View {
         self.shadow(color: Color(hue: 0, saturation: 0, brightness: 0, opacity: activated ? 0.24 : 0.0), radius: 12)
     }
-    
+
     func courseCardShadow() -> some View {
         self.shadow(color: Color(hue: 0, saturation: 0, brightness: 0, opacity: 0.06), radius: 8, y: 4)
     }

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Constants
+import Styles
 
 
 @MainActor public protocol DrapButtonStyle {
@@ -18,14 +18,6 @@ import Constants
 
 public extension DrapButtonStyle where Self == DefaultDrapButtonStyle {
     @MainActor static var `default`: Self {
-        get {
-            return Self()
-        }
-    }
-}
-
-public extension DrapButtonStyle where Self == CondensedDrapButtonStyle {
-    @MainActor static var condensed: Self {
         get {
             return Self()
         }
@@ -74,15 +66,15 @@ public extension View {
             .environment(\.drapButtonTint, tint)
     }
     
-    /// Définit la forme des contours d'un bouton
-    func drapButtonBorderShape(_ borderShape: DrapButtonBorderShape) -> some View {
-        self
-            .environment(\.drapButtonBorderShape, borderShape)
-    }
-    
     /// Définit le format d'un bouton
     func drapButtonFormat(_ format: DrapButtonFormat) -> some View {
         self
             .environment(\.drapButtonFormat, format)
+    }
+    
+    
+    func drapButtonExpand(_ expand: Bool) -> some View {
+        self
+            .environment(\.drapButtonExpand, expand)
     }
 }

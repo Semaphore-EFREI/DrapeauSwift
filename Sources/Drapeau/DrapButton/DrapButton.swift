@@ -6,16 +6,12 @@
 //
 
 import SwiftUI
-import Constants
+import Styles
 
 
 public struct DrapButton<Style: DrapButtonStyle>: View {
     
     // MARK: Attributes
-    
-    @Environment(\.drapButtonTint) var tint
-    @Environment(\.drapButtonRole) var role
-    @Environment(\.drapButtonBorderShape) var borderShape
     
     var disabled: Bool
     var action: () -> Void
@@ -72,33 +68,118 @@ public extension DrapButton where Style == DefaultDrapButtonStyle {
 
 #Preview {
     PreviewScaffold(backgroundColor: .drapQuaternaryBackground) {
-        VStack(spacing: 24) {
-            DrapButton(icon: "signature", title: "Hello") {}
-            DrapButton(icon: "signature", title: "Hello") {}
-                .drapButtonRole(.secondary)
-            DrapButton(icon: "signature", title: "Hello") {}
-                .drapButtonRole(.tertiary)
-            DrapButton(icon: "signature", title: "Hello") {}
-                .drapButtonBorderShape(.rounded)
-            DrapButton(icon: "signature", title: "Hello") {}
-                .drapButtonRole(.secondary)
-                .drapButtonBorderShape(.rounded)
-            DrapButton(icon: "signature", title: "Hello") {}
-                .drapButtonRole(.tertiary)
-                .drapButtonBorderShape(.rounded)
-            DrapButton(icon: "signature", title: "Hello") {}
-                .style(.condensed)
-            DrapButton(icon: "signature", title: "Hello") {}
-                .style(.condensed)
-                .drapButtonFormat(.mini)
-            DrapButton(icon: "signature", title: "Hello") {}
-                .style(.actionBar)
-            DrapButton(icon: "signature", title: "Hello") {}
-                .style(.actionBar)
-                .drapButtonFormat(.circle)
-            DrapButton(icon: "signature", title: "Hello") {}
-                .style(.actionBar)
-                .drapButtonFormat(.mini)
+        VStack(spacing: 32) {
+            if #available(iOS 26.0, macOS 26.0, *) {
+                
+                // MARK: iOS 26
+                
+                VStack(spacing: 24) {
+                    HStack(alignment: .top, spacing: 24) {
+                        VStack(spacing: 24) {
+                            DrapButton(icon: "signature", title: "Hello") {}
+                            DrapButton(icon: "signature", title: "Hello") {}
+                                .drapButtonRole(.secondary)
+                            DrapButton(icon: "signature", title: "Hello") {}
+                                .drapButtonRole(.tertiary)
+                        }
+                        
+                        VStack(spacing: 24) {
+                            DrapButton(icon: "signature", title: "Hello") {}
+                                .drapButtonRole(.primary)
+                                .drapButtonFormat(.circle)
+                            DrapButton(icon: "signature", title: "Hello") {}
+                                .drapButtonRole(.tertiary)
+                                .drapButtonFormat(.circle)
+                        }
+                        
+                        DrapButton(icon: "signature", title: "Hello") {}
+                            .drapButtonRole(.tertiary)
+                            .drapButtonFormat(.simple)
+                    }
+                }
+                
+                VStack(spacing: 24) {
+                    HStack(alignment: .top, spacing: 24) {
+                        VStack(spacing: 24) {
+                            DrapButton(icon: "signature", title: "Hello") {}
+                            DrapButton(icon: "signature", title: "Hello") {}
+                                .drapButtonRole(.secondary)
+                            DrapButton(icon: "signature", title: "Hello") {}
+                                .drapButtonRole(.tertiary)
+                        }
+                        
+                        VStack(spacing: 24) {
+                            DrapButton(icon: "signature", title: "Hello") {}
+                                .drapButtonRole(.primary)
+                                .drapButtonFormat(.circle)
+                            DrapButton(icon: "signature", title: "Hello") {}
+                                .drapButtonRole(.tertiary)
+                                .drapButtonFormat(.circle)
+                        }
+                        
+                        DrapButton(icon: "signature", title: "Hello") {}
+                            .drapButtonRole(.tertiary)
+                            .drapButtonFormat(.simple)
+                    }
+                }
+                .padding()
+                .glassEffect(in: .rect(cornerRadius: 38))
+                
+                
+            } else {
+                
+                // MARK: iOS 18
+                
+                VStack(spacing: 24) {
+                    HStack(alignment: .top, spacing: 24) {
+                        VStack(spacing: 24) {
+                            DrapButton(icon: "signature", title: "Hello") {}
+                            DrapButton(icon: "signature", title: "Hello") {}
+                                .drapButtonRole(.secondary)
+                            DrapButton(icon: "signature", title: "Hello") {}
+                                .drapButtonRole(.tertiary)
+                        }
+                        
+                        VStack(spacing: 24) {
+                            DrapButton(icon: "signature", title: "Hello") {}
+                                .drapButtonFormat(.capsule)
+                            DrapButton(icon: "signature", title: "Hello") {}
+                                .drapButtonFormat(.capsule)
+                                .drapButtonRole(.secondary)
+                            DrapButton(icon: "signature", title: "Hello") {}
+                                .drapButtonFormat(.capsule)
+                                .drapButtonRole(.tertiary)
+                        }
+                    }
+                    
+                    HStack(alignment: .top, spacing: 24) {
+                        VStack(spacing: 24) {
+                            DrapButton(icon: "signature", title: "Hello") {}
+                                .drapButtonRole(.primary)
+                                .drapButtonFormat(.circle)
+                            DrapButton(icon: "signature", title: "Hello") {}
+                                .drapButtonRole(.tertiary)
+                                .drapButtonFormat(.circle)
+                        }
+                        
+                        DrapButton(icon: "signature", title: "Hello") {}
+                            .drapButtonRole(.tertiary)
+                            .drapButtonFormat(.simple)
+                    }
+                    
+                    DrapButton(icon: "signature", title: "Hello") {}
+                        .style(.actionBar)
+                        .drapButtonFormat(.capsule)
+                    DrapButton(icon: "signature", title: "Hello") {}
+                        .style(.actionBar)
+                        .drapButtonFormat(.circle)
+                    DrapButton(icon: "signature", title: "Hello") {}
+                        .style(.actionBar)
+                        .drapButtonFormat(.simple)
+                    
+                    
+                }
+            }
         }
     }
 }

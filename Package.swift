@@ -10,24 +10,24 @@ let package = Package(
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
             name: "Drapeau",
-            targets: ["Drapeau", "Constants"]),
+            targets: ["Drapeau", "Styles"]),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "Drapeau",
-            dependencies: ["Constants"]
+            dependencies: ["Styles"]
         ),
         .target(
-            name: "Constants",
+            name: "Styles",
             resources: [
                 .process("Assets.xcassets")
             ]
         ),
         .testTarget(
             name: "DrapeauSwiftTests",
-            dependencies: ["Drapeau", "Constants"]
+            dependencies: ["Drapeau", "Styles"]
         ),
     ]
 )

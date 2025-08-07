@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Styles
 
 
 /// DrapButton pour une barre d'actions.
@@ -51,8 +52,7 @@ public struct ActionBarDrapButtonStyle: DrapButtonStyle {
             .padding(.horizontal, padding?.width)
             .padding(.vertical, padding?.height)
             .frame(width: size?.width, height: size?.height)
-            .background(format == .mini ? Color.clear : Color.drapTertiaryBackground)
-            .roundedCorners(style: .round)
+            .buttonBackground(cornersStyle: .round, backgroundColor: backgroundColor, showGlassEffect: showGlassEffect)
         }
         
         
@@ -74,10 +74,36 @@ public struct ActionBarDrapButtonStyle: DrapButtonStyle {
             return switch format {
             case .capsule:
                 .init(width: 15, height: 10)
-            case .mini:
+            case .simple:
                 .init(width: 10, height: 6)
             default:
                 nil
+            }
+        }
+        
+        
+        /// Définit le fond à appliquer selon plusieurs critères
+        var backgroundColor: Color? {
+            return switch format {
+            case .circle, .capsule:
+                if #available(iOS 26.0, macOS 26.0, *) {
+                    nil
+                } else {
+                    .drapTertiaryBackground
+                }
+            default:
+                nil
+            }
+        }
+        
+        
+        /// Décide pour iOS 26.0 + s'il faut ou non afficher le verre
+        var showGlassEffect: Bool {
+            return switch format {
+            case .circle, .capsule:
+                true
+            default:
+                false
             }
         }
     }
