@@ -8,14 +8,6 @@
 import SwiftUI
 
 
-public struct DrapTextFieldConfiguration {
-    var label: String?
-    var placeholder: String?
-}
-
-
-
-
 @MainActor
 public enum DrapTextFieldFormat {
     /// Champs de texte avec coins

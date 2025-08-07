@@ -15,9 +15,21 @@ public struct DrapTextField: View {
     
     @Environment(\.drapTextFieldFormat) var format
     
-    public var label: String
-    @Binding public var value: String
-    public var isPassword: Bool = false
+    var label: String?
+    var placeholder: String?
+    @Binding var value: String
+    var isPassword: Bool = false
+    
+    
+    
+    // MARK: Init
+    
+    public init(label: String?, placeholder: String?, value: Binding<String>, isPassword: Bool) {
+        self.label = label
+        self.placeholder = placeholder
+        self._value = value
+        self.isPassword = isPassword
+    }
     
     
     
@@ -25,22 +37,20 @@ public struct DrapTextField: View {
     
     public var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text("Étiquette")
-                .drapDescription()
-                .foregroundStyle(Color.drapTertiaryText)
-                .padding(.leading, labelPadding)
+            if label != nil {
+                labelView
+            }
             
             textFieldView
-                .drapBody()
-                .autocorrectionDisabled()
-                #if !os(macOS)
-                .textInputAutocapitalization(.never)
-                #endif
-                .foregroundStyle(Color.drapPrimaryText)
-                .padding(.vertical, padding.height)
-                .padding(.horizontal, padding.width)
-                .conditionalBackground(cornersStyle: roundedCorners, backgroundColor: backgroundColor)
         }
+    }
+    
+    
+    var labelView: some View {
+        Text(label ?? "")
+            .drapDescription()
+            .foregroundStyle(Color.drapTertiaryText)
+            .padding(.leading, labelPadding)
     }
     
     
@@ -48,16 +58,26 @@ public struct DrapTextField: View {
         Group {
             if isPassword {
                 SecureField("", text: $value, prompt: promptView)
+                    .textFieldStyle(.plain)
             } else {
                 TextField("", text: $value, prompt: promptView)
                     .textFieldStyle(.plain)
             }
         }
+        .drapBody()
+        .autocorrectionDisabled()
+        #if !os(macOS)
+        .textInputAutocapitalization(.never)
+        #endif
+        .foregroundStyle(Color.drapPrimaryText)
+        .padding(.vertical, padding.height)
+        .padding(.horizontal, padding.width)
+        .conditionalBackground(cornersStyle: roundedCorners, backgroundColor: backgroundColor)
     }
     
     
     var promptView: Text {
-        Text("TextField")
+        Text(placeholder ?? "")
             .drapBody()
             .foregroundColor(Color.drapQuaternaryText)
     }
@@ -113,7 +133,7 @@ public struct DrapTextField: View {
     //@Previewable @State var value = ""
     
     PreviewScaffold {
-        DrapTextField(label: "Étiquette", value: .constant(""), isPassword: false)
+        DrapTextField(label: "Étiquette", placeholder: "Bouche trou", value: .constant(""), isPassword: false)
             .drapTextFieldFormat(.capsule)
     }
 }
