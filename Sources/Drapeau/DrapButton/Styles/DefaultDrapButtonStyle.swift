@@ -55,12 +55,12 @@ public struct DefaultDrapButtonStyle: DrapButtonStyle {
             .padding(.vertical, padding?.height)
             .frame(width: dimensions?.width, height: dimensions?.height, alignment: .center)
             .frame(maxWidth: expand ? .infinity : nil)
-            .buttonBackground(cornersStyle: cornersStyle, backgroundColor: backgroundColor ?? tint, showGlassEffect: showGlassEffect)
+            .conditionalBackground(cornersStyle: cornersStyle, backgroundColor: backgroundColor ?? tint, showGlassEffect: showGlassEffect)
         }
         
         
         
-        // MARK: Methods
+        // MARK: Computed Properties
         
         /// Retourne la couleur de fond à appliquer sur le bouton. Nil indique qu'il faut utiliser la teinte du bouton.
         var backgroundColor: Color? {

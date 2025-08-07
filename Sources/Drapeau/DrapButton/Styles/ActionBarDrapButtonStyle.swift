@@ -52,11 +52,11 @@ public struct ActionBarDrapButtonStyle: DrapButtonStyle {
             .padding(.horizontal, padding?.width)
             .padding(.vertical, padding?.height)
             .frame(width: size?.width, height: size?.height)
-            .buttonBackground(cornersStyle: .round, backgroundColor: backgroundColor, showGlassEffect: showGlassEffect)
+            .conditionalBackground(cornersStyle: .round, backgroundColor: backgroundColor, showGlassEffect: showGlassEffect)
         }
         
         
-        // MARK: Methods
+        // MARK: Computed Properties
         
         /// Retourne la taille du bouton.
         var size: CGSize? {
