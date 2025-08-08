@@ -79,7 +79,7 @@ public extension View {
 /// Valeurs fixes pour l'arrondi des coins
 public enum RoundedCornersStyle: CGFloat {
     case regular = 16
-    case medium = 23
+    case medium = 24
     case large = 32
     case extraLarge = 38
     case round = 1000        // Valeur excessive pour que les coins soient ronds peu importe la taille de l'élément

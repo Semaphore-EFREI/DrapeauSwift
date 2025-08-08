@@ -107,6 +107,10 @@ public extension Image {
         self.font(.system(size: 15).weight(.semibold))
     }
     
+    func descriptionIcon() -> some View {
+        self.font(.system(size: 11).weight(.semibold))
+    }
+    
     func lightDecorationIcon() -> some View {
         self.font(.system(size: 28).weight(.bold))
     }

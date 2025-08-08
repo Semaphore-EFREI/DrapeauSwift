@@ -8,16 +8,25 @@
 import SwiftUI
 
 
+public struct DrapTextFieldConfiguration {
+    var label: String?
+    var placeholder: String?
+    
+    var secured: Bool = false
+}
+
+
+
 @MainActor
-public enum DrapTextFieldFormat {
-    /// Champs de texte avec coins
-    case regular
-    /// Champs de texte en capsule
-    case capsule
+public enum DrapTextFieldRole {
+    /// Champs de texte primaire
+    case primary
+    /// Champs de texte secondaire
+    case secondary
 }
 
 
 
 extension EnvironmentValues {
-    @Entry var drapTextFieldFormat: DrapTextFieldFormat = .regular
+    @Entry var drapTextFieldRole: DrapTextFieldRole = .primary
 }
