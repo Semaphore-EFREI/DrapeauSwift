@@ -10,11 +10,16 @@ import Styles
 
 
 public struct DrapButtonConfiguration {
+    let id = UUID()
     var title: String?
     var icon: String?
     
+    var disabled: Bool
+    
     // iOS 26 +
     var glassEffect: Bool = true
+    
+    var action: () -> Void
 }
 
 
@@ -37,10 +42,8 @@ public enum DrapButtonRole {
 public enum DrapButtonFormat {
     /// Bouton avec des coins légèrements arrondis
     case standard
-    /// Bouton en forme de capsule
+    /// Bouton en forme de capsule ou cercle
     case capsule
-    /// Bouton en forme de cercle
-    case circle
     /// Bouton en sans fond
     case simple
 }
@@ -74,6 +77,7 @@ extension EnvironmentValues {
     }
 }
 */
+
 
 
 

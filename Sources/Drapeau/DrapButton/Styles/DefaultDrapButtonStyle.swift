@@ -45,15 +45,15 @@ public struct DefaultDrapButtonStyle: DrapButtonStyle {
                         .buttonIcon()
                 }
                 
-                if format != .circle, let title = configuration.title {
+                if let title = configuration.title {
                     Text(title)
                         .drapButton()
                 }
             }
             .foregroundStyle(foregroundColor ?? tint)
-            .padding(.horizontal, padding?.width)
-            .padding(.vertical, padding?.height)
-            .frame(width: dimensions?.width, height: dimensions?.height, alignment: .center)
+            .padding(.horizontal, padding.width)
+            .padding(.vertical, padding.height)
+            .frame(minWidth: minSize?.width, minHeight: minSize?.height, alignment: .center)
             .frame(maxWidth: expand ? .infinity : nil)
             .conditionalBackground(cornersStyle: cornersStyle, backgroundColor: backgroundColor ?? tint, showGlassEffect: showGlassEffect)
         }
@@ -87,20 +87,24 @@ public struct DefaultDrapButtonStyle: DrapButtonStyle {
         
         
         /// Retourne l'espacement autour du contenu du bouton s'il y en a.
-        var padding: CGSize? {
+        var padding: CGSize {
             return switch format {
-            case .circle:
-                nil
+            case .capsule:
+                if configuration.title != nil {
+                    .init(width: 20, height: 13)
+                } else {
+                    .init(width: 0, height: 0)
+                }
             default:
                 .init(width: 20, height: 13)
             }
         }
         
         
-        /// Retourne les dimensions fixes du bouton s'il y en a.
-        var dimensions: CGSize? {
+        /// Retourne les dimensions minimales du bouton s'il y en a.
+        var minSize: CGSize? {
             return switch format {
-            case .circle:
+            case .capsule:
                 .init(width: 48, height: 48)
             default:
                 nil

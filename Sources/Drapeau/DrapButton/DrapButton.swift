@@ -13,9 +13,6 @@ public struct DrapButton<Style: DrapButtonStyle>: View {
     
     // MARK: Attributes
     
-    var disabled: Bool
-    var action: () -> Void
-    
     var config: DrapButtonConfiguration
     var style: Style
     
@@ -24,17 +21,12 @@ public struct DrapButton<Style: DrapButtonStyle>: View {
     // MARK: Init
     
     init(icon: String? = nil, title: String? = nil, disabled: Bool = false, style: Style, action: @escaping () -> Void) {
-        self.disabled = disabled
-        self.action = action
-        
-        self.config = DrapButtonConfiguration(title: title, icon: icon)
+        self.config = DrapButtonConfiguration(title: title, icon: icon, disabled: disabled, action: action)
         self.style = style
     }
     
     
-    init(disabled: Bool = false, config: DrapButtonConfiguration, style: Style, action: @escaping () -> Void) {
-        self.disabled = disabled
-        self.action = action
+    init(config: DrapButtonConfiguration, style: Style) {
         self.config = config
         self.style = style
     }
@@ -45,12 +37,12 @@ public struct DrapButton<Style: DrapButtonStyle>: View {
     
     public var body: some View {
         Button {
-            action()
+            config.action()
         } label: {
             style.makeBody(configuration: config)
         }
         .buttonStyle(.plain)
-        .disabled(disabled)
+        .disabled(config.disabled)
     }
 }
 
@@ -83,14 +75,14 @@ public extension DrapButton where Style == DefaultDrapButtonStyle {
                                 .drapButtonRole(.tertiary)
                         }
                         
+                        
                         VStack(spacing: 24) {
-                            DrapButton(icon: "signature", title: "Hello") {}
+                            DrapButton(icon: "signature") {}
                                 .drapButtonRole(.primary)
-                                .drapButtonFormat(.circle)
-                            DrapButton(icon: "signature", title: "Hello") {}
+                            DrapButton(icon: "signature") {}
                                 .drapButtonRole(.tertiary)
-                                .drapButtonFormat(.circle)
                         }
+                        .drapButtonFormat(.capsule)
                         
                         DrapButton(icon: "signature", title: "Hello") {}
                             .drapButtonRole(.tertiary)
@@ -109,13 +101,12 @@ public extension DrapButton where Style == DefaultDrapButtonStyle {
                         }
                         
                         VStack(spacing: 24) {
-                            DrapButton(icon: "signature", title: "Hello") {}
+                            DrapButton(icon: "signature") {}
                                 .drapButtonRole(.primary)
-                                .drapButtonFormat(.circle)
-                            DrapButton(icon: "signature", title: "Hello") {}
+                            DrapButton(icon: "signature") {}
                                 .drapButtonRole(.tertiary)
-                                .drapButtonFormat(.circle)
                         }
+                        .drapButtonFormat(.capsule)
                         
                         DrapButton(icon: "signature", title: "Hello") {}
                             .drapButtonRole(.tertiary)
@@ -152,6 +143,7 @@ public extension DrapButton where Style == DefaultDrapButtonStyle {
                         }
                     }
                     
+                    /*
                     HStack(alignment: .top, spacing: 24) {
                         VStack(spacing: 24) {
                             DrapButton(icon: "signature", title: "Hello") {}
@@ -165,14 +157,15 @@ public extension DrapButton where Style == DefaultDrapButtonStyle {
                         DrapButton(icon: "signature", title: "Hello") {}
                             .drapButtonRole(.tertiary)
                             .drapButtonFormat(.simple)
-                    }
+                    }*/
                     
                     DrapButton(icon: "signature", title: "Hello") {}
                         .style(.actionBar)
                         .drapButtonFormat(.capsule)
+                    /*
                     DrapButton(icon: "signature", title: "Hello") {}
                         .style(.actionBar)
-                        .drapButtonFormat(.circle)
+                        .drapButtonFormat(.circle)*/
                     DrapButton(icon: "signature", title: "Hello") {}
                         .style(.actionBar)
                         .drapButtonFormat(.simple)

@@ -47,7 +47,7 @@ public extension DrapButton {
     
     /// Change le style d'un bouton.
     func style<S: DrapButtonStyle>(_ style: S) -> DrapButton<S> {
-        return DrapButton<S>(disabled: self.disabled, config: self.config, style: style, action: self.action)
+        return DrapButton<S>(config: self.config, style: style)
     }
 }
 

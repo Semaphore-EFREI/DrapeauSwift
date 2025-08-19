@@ -43,15 +43,15 @@ public struct ActionBarDrapButtonStyle: DrapButtonStyle {
                 }
                 
                 // Si le bouton est rond, il n'y a pas de texte à afficher
-                if format != .circle, let title = configuration.title {
+                if let title = configuration.title {
                     Text(title)
                         .drapButton()
                 }
             }
             .foregroundStyle(tint)
-            .padding(.horizontal, padding?.width)
-            .padding(.vertical, padding?.height)
-            .frame(width: size?.width, height: size?.height)
+            .padding(.horizontal, padding.width)
+            .padding(.vertical, padding.height)
+            .frame(minWidth: minSize?.width, minHeight: minSize?.height)
             .conditionalBackground(cornersStyle: .round, backgroundColor: backgroundColor, showGlassEffect: showGlassEffect)
         }
         
@@ -59,9 +59,9 @@ public struct ActionBarDrapButtonStyle: DrapButtonStyle {
         // MARK: Computed Properties
         
         /// Retourne la taille du bouton.
-        var size: CGSize? {
+        var minSize: CGSize? {
             return switch format {
-            case .circle:
+            case .capsule:
                 .init(width: 44, height: 44)
             default:
                 nil
@@ -70,14 +70,16 @@ public struct ActionBarDrapButtonStyle: DrapButtonStyle {
         
         
         /// Retourne le padding du bouton.
-        var padding: CGSize? {
+        var padding: CGSize {
             return switch format {
             case .capsule:
-                .init(width: 15, height: 10)
-            case .simple:
-                .init(width: 10, height: 6)
+                if configuration.title != nil {
+                    .init(width: 15, height: 13)
+                } else {
+                    .init(width: 0, height: 0)
+                }
             default:
-                nil
+                .init(width: 0, height: 0)
             }
         }
         
@@ -85,7 +87,7 @@ public struct ActionBarDrapButtonStyle: DrapButtonStyle {
         /// Définit le fond à appliquer selon plusieurs critères
         var backgroundColor: Color? {
             return switch format {
-            case .circle, .capsule:
+            case .capsule:
                 if #available(iOS 26.0, macOS 26.0, *) {
                     nil
                 } else {
@@ -100,7 +102,7 @@ public struct ActionBarDrapButtonStyle: DrapButtonStyle {
         /// Décide pour iOS 26.0 + s'il faut ou non afficher le verre
         var showGlassEffect: Bool {
             return switch format {
-            case .circle, .capsule:
+            case .capsule:
                 true
             default:
                 false
