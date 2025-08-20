@@ -8,7 +8,6 @@
 import SwiftUI
 
 
-
 extension View {
     /// Permet d'appliquer ou non un modificateur.
     ///
@@ -25,7 +24,7 @@ extension View {
     ///     }
     ///
     @ViewBuilder
-    public func `if`<Content: View>(_ condition: Bool, transform: (Self) -> Content) -> some View {
+    public func `if`<Content: View>(_ condition: Bool, _ transform: (Self) -> Content) -> some View {
         if condition {
             transform(self)
         } else {

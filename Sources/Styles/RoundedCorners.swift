@@ -51,8 +51,10 @@ public extension View {
                     topTrailingRadius: topTrailing,
                     style: .continuous
                 )
+                .strokeBorder(borderColor, lineWidth: borderWidth)
             }
     }
+
     
     
     /// Arrondit les angles selon le style spécifié.

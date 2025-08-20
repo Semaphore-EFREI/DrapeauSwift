@@ -12,20 +12,16 @@ struct ContextToolbar: View {
     
     // MARK: Attributes
     
-    var title: String?
-    var description: String?
-    
-    var configuration: ContextMenuBarConfiguration
+    @Binding var items: [ErasedContextToolbarItem]
+    var titleConfig: ContextToolbarTitleConfiguration?
     
     
     
     // MARK: Init
     
-    init(title: String?, description: String?, leadingButtonsConfigs: [DrapButtonConfiguration], trailingButtonsConfigs: [DrapButtonConfiguration]) {
-        self.title = title
-        self.description = description
-        self.leadingButtonsConfigs = leadingButtonsConfigs
-        self.trailingButtonsConfigs = trailingButtonsConfigs
+    init(items: Binding<[ErasedContextToolbarItem]>, titleConfig: ContextToolbarTitleConfiguration? = nil) {
+        self._items = items
+        self.titleConfig = titleConfig
     }
     
     
@@ -36,35 +32,41 @@ struct ContextToolbar: View {
         Group {
             if #available(iOS 26.0, macOS 26.0, *) {
                 ViewThatFits(in: .horizontal) {
-                    inlineMenuBar
-                    multilineMenuBar
+                    inlineView
+                    multilineView
                 }
+                .drapButtonFormat(.capsule)
+                .drapButtonTint(.drapPrimaryText)
             } else {
-                multilineMenuBar
+                multilineView
             }
         }
     }
     
     
-    var inlineMenuBar: some View {
+    var inlineView: some View {
         HStack(spacing: 12) {
             HStack(spacing: 6) {
                 leadingButtonsView
-                titleView(singleLine: true)
+                if let titleConfig {
+                    ContextToolbarTitle(config: titleConfig, singleLine: true)
+                }
             }
             trailingButtonsView
         }
         .padding(16)
     }
     
-    var multilineMenuBar: some View {
+    var multilineView: some View {
         VStack(spacing: 16) {
             HStack(spacing: 12) {
                 leadingButtonsView
                 Spacer()
                 trailingButtonsView
             }
-            titleView(singleLine: false)
+            if let titleConfig {
+                ContextToolbarTitle(config: titleConfig, singleLine: false)
+            }
         }
         .padding(16)
     }
@@ -73,42 +75,15 @@ struct ContextToolbar: View {
     
     var leadingButtonsView: some View {
         HStack(spacing: 12) {
-            ForEach(leadingButtonsConfigs, id: \.id) { config in
-                DrapButton(config: config, style: .actionBar)
-                    .drapButtonRole(.tertiary)
-                    .drapButtonFormat(.capsule)
-            }
+            ForEach(items.filter { $0.placement == .leading }, id: \.id) { it in it.makeBody() }
         }
     }
     
     
     var trailingButtonsView: some View {
         HStack(spacing: 12) {
-            ForEach(trailingButtonsConfigs, id: \.id) { config in
-                DrapButton(config: config, style: .actionBar)
-                    .drapButtonRole(.tertiary)
-                    .drapButtonFormat(.capsule)
-            }
+            ForEach(items.filter { $0.placement == .trailing }, id: \.id) { it in it.makeBody() }
         }
-    }
-    
-    
-    func titleView(singleLine: Bool) -> some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text(title ?? "")
-                .drapImportantBody()
-                .foregroundStyle(Color.drapPrimaryText)
-                .lineLimit(singleLine ? 1 : nil)
-
-            if let description {
-                Text(description)
-                    .drapBody()
-                    .foregroundStyle(Color.drapSecondaryText)
-                    .lineLimit(singleLine ? 1 : nil)
-            }
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.leading, 8)
     }
 }
 
@@ -119,21 +94,15 @@ struct ContextToolbar: View {
 #Preview {
     PreviewScaffold(disablePadding: true) {
         //VStack {
-        ContextToolbar(
-                title: "Signaler un retard",
-                description: "Retard de 15 min",
-                leadingButtonsConfigs: [
-                    .init(title: "Annuler", icon: "chevron.left", disabled: false, glassEffect: true) {
+        ContextToolbar(items: .constant([
+            ErasedContextToolbarItem(id: UUID(), placement: .leading, makeBody: {
+                AnyView(
+                    DrapButton(icon: "plus", title: "Test", disabled: false) {
                         print("")
                     }
-                ],
-                trailingButtonsConfigs: [
-                    .init(title: nil, icon: "person.fill", disabled: false, glassEffect: true) {
-                        print("")
-                    }
-                ]
-            )
-            .drapButtonFormat(.capsule)
+                )
+            })
+        ]))
         //}
         //.glassEffect(in: .rect(cornerRadius: 38))
         //.padding()

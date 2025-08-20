@@ -8,37 +8,22 @@
 import SwiftUI
 import Styles
 
-/*
+
 public struct ContextWindow<Content: View>: View {
     
     // MARK: Attributes
     
     @EnvironmentObject var metrics: ScreenMetrics
     
-    public var style: Style
-    public var menuBar: ContextMenuBar
-    
-    public var content: Content?
-    
-    public var image: String?
-    public var description: String?
-    public var actionButton: DrapButton?
+    @State var items: [ErasedContextToolbarItem] = []
+    @State var toolbarTitleConfig: ContextToolbarTitleConfiguration? = nil
+    var content: Content
     
     
     
     // MARK: Init
     
-    public init(image: String, description: String, menuBar: () -> ContextMenuBar, actionButton: () -> DrapButton) {
-        self.style = .structured
-        self.menuBar = menuBar()
-        self.image = image
-        self.description = description
-        self.actionButton = actionButton()
-    }
-    
-    public init(menuBar: () -> ContextMenuBar, @ViewBuilder content: () -> Content) {
-        self.style = .custom
-        self.menuBar = menuBar()
+    public init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
     
@@ -48,65 +33,33 @@ public struct ContextWindow<Content: View>: View {
     
     public var body: some View {
         ZStack {
-            if style == .custom {
-                customView
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    .background(Color.drapPrimaryBackground)
-            } else {
-                structuredView
-            }
+            content
+                .onPreferenceChange(ContextToolbarPreferenceKey.self) { value in
+                    items = ordered(value)
+                }
+                .onPreferenceChange(ContextToolbarTitlePreferenceKey.self) { value in
+                    toolbarTitleConfig = value
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Color.drapPrimaryBackground)
             
-            VStack {
-                menuBar
-                Spacer()
-            }
-            
+            toolbarView
         }
         .frame(height: metrics.height / 2)
-        //.unevenRoundedCorners(topLeading: RoundedCornersStyle.extraLarge.rawValue, topTrailing: RoundedCornersStyle.extraLarge.rawValue, bottomTrailing: metrics.borderRadius - 8, bottomLeading: metrics.borderRadius - 8)
-        .padding(8)
-        .ignoresSafeArea()
-    }
-    
-    
-    var customView: some View {
-        Group {
-            if let content {
-                content
+        .apply {
+            if #available(iOS 16.0, macOS 13.0, *) {
+                $0.unevenRoundedCorners(style: .extraLarge, bottomTrailing: metrics.borderRadius - 8, bottomLeading: metrics.borderRadius - 8, borderStyle: .primary)
             } else {
-                Text("Erreur d'affichage")
+                $0.roundedCorners(style: .large)
             }
         }
     }
     
     
-    var structuredView: some View {
-        let dimensions: CGSize = windowDimensions()
-        
-        return ZStack {
-            if let image, let description, let actionButton {
-                Image(image)
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: dimensions.width, height: dimensions.height)
-                    .clipped()
-                
-                VStack {
-                    Spacer()
-                    
-                    VStack(spacing: 16) {
-                        Text(description)
-                            .drapDescription()
-                            .multilineTextAlignment(.center)
-                        actionButton
-                    }
-                    .padding([.horizontal, .bottom], metrics.borderRadius / 2)
-                    .padding(.top, 16)
-                    .background(Color.drapPrimaryBackground)
-                }
-            } else {
-                Text("Erreur d'affichage")
-            }
+    var toolbarView: some View {
+        VStack {
+            ContextToolbar(items: $items, titleConfig: toolbarTitleConfig)
+            Spacer()
         }
     }
     
@@ -120,14 +73,19 @@ public struct ContextWindow<Content: View>: View {
         return CGSize(width: maxedWidth, height: maxedHeight)
     }
     
-    
-    
-    // MARK: Inner Objects
-    
-    public enum Style {
-        case custom, structured
+    func ordered(_ items: [ErasedContextToolbarItem]) -> [ErasedContextToolbarItem] {
+        func rank(_ p: ContextToolbarPlacement) -> Int {
+            switch p { case .leading: return 0; case .trailing: return 2 }
+        }
+        return items.sorted {
+            let a = (rank($0.placement), String(describing: $0.id))
+            let b = (rank($1.placement), String(describing: $1.id))
+            return a < b
+        }
     }
 }
+
+
 
 
 
@@ -136,31 +94,33 @@ public struct ContextWindow<Content: View>: View {
         VStack {
             Spacer()
             
-            /*
-            ContextWindow<Text>(image: "iPhone sur Balise", description: "Appuyez sur “Scanner la balise” et collez votre appareil sur celle-ci") {
-                ContextMenuBar {
-                    DrapButton(icon: "chevron.left", title: "Annuler", tint: .drapPrimaryText, kind: .small) {
-                        print("")
-                    }
-                } trailing: {
-                    DrapButton(icon: "qrcode.viewfinder", tint: .drapPrimaryText, kind: .small) {
-                        print("")
-                    }
-                }
-            } actionButton: {
-                DrapButton(icon: "square.split.diagonal.fill", title: "Scanner la balise", kind: .primaryRounded) {
+            ContextWindow {
+                DrapButton(icon: "square.split.diagonal.fill", title: "Scanner la balise") {
                     print("")
                 }
+                .drapButtonExpand()
+                .drapButtonTint(.drapBlue)
+                .padding()
+                .contextToolbarTitle("Titre de la fenêtre", description: "Ceci est une description")
+                .contextToolbar {
+                    ContextToolbarButton(placement: .leading) {
+                        DrapButton(icon: "chevron.left") {
+                            print("")
+                        }
+                        .style(.actionBar)
+                    }
+                    
+                    ContextToolbarButton(placement: .trailing) {
+                        DrapButton(icon: "qrcode.viewfinder", title: "QR Code") {
+                            print("")
+                        }
+                        .style(.actionBar)
+                    }
+                }
             }
-            */
-            ContextWindow(menuBar: {
-            ContextMenuBar()
-            }, content: {
-                Text("test")
-            })
-
         }
+        .padding(8)
         .ignoresSafeArea()
     }
 }
-*/
+

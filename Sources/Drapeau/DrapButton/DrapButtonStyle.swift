@@ -73,8 +73,8 @@ public extension View {
     }
     
     
-    func drapButtonExpand(_ expand: Bool) -> some View {
+    func drapButtonExpand() -> some View {
         self
-            .environment(\.drapButtonExpand, expand)
+            .environment(\.drapButtonExpand, true)
     }
 }

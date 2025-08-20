@@ -1,11 +1,12 @@
 //
-//  ContextToolbarContent.swift
+//  ContextToolbarParser.swift
 //  Drapeau
 //
 //  Created by Thomas Le Bonnec on 14/08/2025.
 //
 
 import SwiftUI
+
 
 
 // MARK: - Placement
@@ -30,7 +31,7 @@ struct ErasedContextToolbarItem: Identifiable, Equatable {
 
 
 
-// MARK: - PreferenceKey (propagation ascendante)
+// MARK: - PreferenceKey
 
 struct ContextToolbarPreferenceKey: PreferenceKey {
     static var defaultValue: [ErasedContextToolbarItem] { [] }
@@ -42,7 +43,7 @@ struct ContextToolbarPreferenceKey: PreferenceKey {
 
 
 
-// MARK: - Protocole Content (simple, sans `associatedtype` récursif)
+// MARK: - Protocole Content
 
 /// Contrat minimal : tout contenu de toolbar sait "se collecter" en items effacés.
 protocol ContextToolbarContent {
@@ -72,29 +73,56 @@ struct ContextToolbarEmpty: ContextToolbarContent {
 
 
 /// Élément terminal "item" (un vrai bouton/label/etc.)
-struct ContextToolbarItem<Label: View>: ContextToolbarContent {
-    typealias Body = ContextToolbarEmpty  // terminal
+fileprivate struct ContextToolbarItem<Label: View>: ContextToolbarContent {
+    typealias Body = ContextToolbarEmpty
 
-    let id: UUID
+    let id: AnyHashable
     let placement: ContextToolbarPlacement
     @ViewBuilder var label: Label
 
-    init(id: UUID = UUID(), placement: ContextToolbarPlacement, @ViewBuilder label: () -> Label) {
+    init(id: AnyHashable = UUID(), placement: ContextToolbarPlacement, @ViewBuilder label: () -> Label) {
         self.id = id
         self.placement = placement
         self.label = label()
     }
 
-    var body: ContextToolbarEmpty { ContextToolbarEmpty() } // jamais appelé
+    var body: ContextToolbarEmpty { ContextToolbarEmpty() }
 
     func _collect(into items: inout [ErasedContextToolbarItem]) {
         items.append(ErasedContextToolbarItem(
             id: id,
             placement: placement,
-            makeBody: { AnyView(label) } // ← effaçage ici seulement
+            makeBody: { AnyView(label) }
         ))
     }
 }
+
+
+/// Élément terminal "bouton"
+public struct ContextToolbarButton: ContextToolbarContent {
+    typealias Body = ContextToolbarEmpty
+    
+    let id: AnyHashable
+    let placement: ContextToolbarPlacement
+    @ViewBuilder var label: DrapButton<ActionBarDrapButtonStyle>
+    
+    init(id: AnyHashable = UUID(), placement: ContextToolbarPlacement, @ViewBuilder label: () -> DrapButton<ActionBarDrapButtonStyle>) {
+        self.id = id
+        self.placement = placement
+        self.label = label()
+    }
+    
+    var body: ContextToolbarEmpty { ContextToolbarEmpty() }
+    
+    func _collect(into items: inout [ErasedContextToolbarItem]) {
+        items.append(ErasedContextToolbarItem(
+            id: id,
+            placement: placement,
+            makeBody: { AnyView(label) }
+        ))
+    }
+}
+
 
 
 /// Composite binaire (équivalent conceptuel d’un _TupleView<Left, Right>)
@@ -103,6 +131,11 @@ struct ContextToolbarPair<Left: ContextToolbarContent, Right: ContextToolbarCont
     let right: Right
 
     var body: some ContextToolbarContent { left; right }
+
+    func _collect(into items: inout [ErasedContextToolbarItem]) {
+        left._collect(into: &items)
+        right._collect(into: &items)
+    }
 }
 
 
@@ -112,6 +145,10 @@ struct ContextToolbarOptional<Wrapped: ContextToolbarContent>: ContextToolbarCon
 
     var body: some ContextToolbarContent {
         if let w = wrapped { w } else { ContextToolbarEmpty() }
+    }
+
+    func _collect(into items: inout [ErasedContextToolbarItem]) {
+        if let w = wrapped { w._collect(into: &items) }
     }
 }
 
@@ -125,6 +162,13 @@ struct ContextToolbarEither<First: ContextToolbarContent, Second: ContextToolbar
         switch storage {
         case .first(let f): f
         case .second(let s): s
+        }
+    }
+
+    func _collect(into items: inout [ErasedContextToolbarItem]) {
+        switch storage {
+        case .first(let f):  f._collect(into: &items)
+        case .second(let s): s._collect(into: &items)
         }
     }
 }
@@ -141,6 +185,10 @@ struct ContextToolbarArray<Element: ContextToolbarContent>: ContextToolbarConten
             ContextToolbarEmpty()
         }
     }
+
+    func _collect(into items: inout [ErasedContextToolbarItem]) {
+        for e in elements { e._collect(into: &items) }
+    }
 }
 
 
@@ -149,7 +197,7 @@ struct ContextToolbarArray<Element: ContextToolbarContent>: ContextToolbarConten
 
 @resultBuilder
 struct ContextToolbarContentBuilder {
-    // 0 élément
+    // 0 éléments
     static func buildBlock() -> ContextToolbarEmpty { ContextToolbarEmpty() }
 
     // 1 élément
@@ -259,16 +307,17 @@ struct ContextNavigationHost<Content: View>: View {
 
 // MARK: - Démo
 
+/*
 struct DemoContextToolbar: View {
     @State private var count = 0
     @State private var on = false
-
+    
     var body: some View {
         VStack(spacing: 16) {
             Text("En dehors du host : ceci ne sera pas collecté")
                 .font(.footnote)
                 .foregroundStyle(.secondary)
-
+            
             // ❌ En dehors du host : la préférence n'atteint pas l’hôte
             Color.clear
                 .contextToolbar {
@@ -276,9 +325,9 @@ struct DemoContextToolbar: View {
                         Button("Ghost") { count += 1 }
                     }
                 }
-
+            
             Divider()
-
+            
             // ✅ À l’intérieur : items collectés et rendus
             ContextNavigationHost {
                 List(0..<8, id: \.self) { i in
@@ -303,3 +352,4 @@ struct DemoContextToolbar: View {
         .padding()
     }
 }
+*/

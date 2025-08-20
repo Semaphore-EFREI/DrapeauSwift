@@ -76,10 +76,10 @@ public struct ActionBarDrapButtonStyle: DrapButtonStyle {
                 if configuration.title != nil {
                     .init(width: 15, height: 13)
                 } else {
-                    .init(width: 0, height: 0)
+                    .init(width: 10, height: 6)
                 }
             default:
-                .init(width: 0, height: 0)
+                .init(width: 10, height: 6)
             }
         }
         
