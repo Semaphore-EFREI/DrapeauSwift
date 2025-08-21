@@ -36,45 +36,8 @@ public extension DrapButtonStyle where Self == ActionBarDrapButtonStyle {
 
 
 public extension DrapButton {
-    /// Désactive l'effet de verre sur le bouton
-    /// - Requires: iOS 26+ / macOS 26+
-    func disableGlassEffect() -> Self {
-        var copy = self
-        copy.config.glassEffect = false
-        return copy
-    }
-    
-    
     /// Change le style d'un bouton.
     func style<S: DrapButtonStyle>(_ style: S) -> DrapButton<S> {
         return DrapButton<S>(config: self.config, style: style)
-    }
-}
-
-
-
-public extension View {
-    /// Définit le rôle d'un bouton.
-    func drapButtonRole(_ role: DrapButtonRole) -> some View {
-        self
-            .environment(\.drapButtonRole, role)
-    }
-    
-    /// Définit la teinte d'un bouton.
-    func drapButtonTint(_ tint: Color) -> some View {
-        self
-            .environment(\.drapButtonTint, tint)
-    }
-    
-    /// Définit le format d'un bouton
-    func drapButtonFormat(_ format: DrapButtonFormat) -> some View {
-        self
-            .environment(\.drapButtonFormat, format)
-    }
-    
-    
-    func drapButtonExpand() -> some View {
-        self
-            .environment(\.drapButtonExpand, true)
     }
 }
