@@ -89,7 +89,7 @@ public struct DefaultDrapButtonStyle: DrapButtonStyle {
         /// Retourne l'espacement autour du contenu du bouton s'il y en a.
         var padding: CGSize {
             return switch format {
-            case .capsule:
+            case .standard, .capsule:
                 if configuration.title != nil {
                     .init(width: 20, height: 13)
                 } else {
@@ -104,7 +104,7 @@ public struct DefaultDrapButtonStyle: DrapButtonStyle {
         /// Retourne les dimensions minimales du bouton s'il y en a.
         var minSize: CGSize? {
             return switch format {
-            case .capsule:
+            case .standard, .capsule:
                 .init(width: 48, height: 48)
             default:
                 nil

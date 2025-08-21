@@ -88,11 +88,7 @@ public struct ActionBarDrapButtonStyle: DrapButtonStyle {
         var backgroundColor: Color? {
             return switch format {
             case .capsule:
-                if #available(iOS 26.0, macOS 26.0, *) {
-                    nil
-                } else {
-                    .drapTertiaryBackground
-                }
+                .drapTertiaryBackground
             default:
                 nil
             }

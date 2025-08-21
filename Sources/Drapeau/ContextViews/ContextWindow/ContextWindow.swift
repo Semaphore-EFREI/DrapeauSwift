@@ -15,7 +15,7 @@ public struct ContextWindow<Content: View, BottomContent: View>: View {
     
     @EnvironmentObject var metrics: ScreenMetrics
     
-    @State private var items: [ErasedContextToolbarItem] = []
+    @State private var toolbarItems: [ErasedContextToolbarItem] = []
     @State private var toolbarHeight: CGFloat = 0
     @State private var toolbarTitleConfig: ContextToolbarTitleConfiguration? = nil
     var contentStyle: Style = .inline
@@ -59,7 +59,7 @@ public struct ContextWindow<Content: View, BottomContent: View>: View {
         VStack(spacing: 0) {
             content
                 .onPreferenceChange(ContextToolbarPreferenceKey.self) { value in
-                    items = value
+                    toolbarItems = value
                 }
                 .onPreferenceChange(ContextToolbarTitlePreferenceKey.self) { value in
                     toolbarTitleConfig = value
@@ -79,7 +79,7 @@ public struct ContextWindow<Content: View, BottomContent: View>: View {
     
     var toolbarView: some View {
         VStack {
-            ContextToolbar(items: $items, titleConfig: toolbarTitleConfig)
+            ContextToolbar(items: $toolbarItems, titleConfig: toolbarTitleConfig)
                 .background {
                     GeometryReader { geo in
                         Color.clear
