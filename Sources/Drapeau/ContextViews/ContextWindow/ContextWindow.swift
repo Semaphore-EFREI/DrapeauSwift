@@ -37,20 +37,23 @@ public struct ContextWindow<Content: View, BottomContent: View>: View {
     // MARK: View
     
     public var body: some View {
-        ZStack(alignment: .top) {
-            mainContent
+        VStack {
+            Spacer()
             
-            toolbarView
-        }
-        .frame(height: metrics.height / 2)
-        .apply {
-            if #available(iOS 16.0, macOS 13.0, *) {
-                $0.unevenRoundedCorners(style: .extraLarge, bottomTrailing: metrics.borderRadius - 8, bottomLeading: metrics.borderRadius - 8, borderStyle: .primary)
-            } else {
-                $0.roundedCorners(style: .large)
+            ZStack(alignment: .top) {
+                mainContent
+                toolbarView
             }
+            .frame(height: metrics.height / 2)
+            .apply {
+                if #available(iOS 16.0, macOS 13.0, *) {
+                    $0.unevenRoundedCorners(style: .extraLarge, bottomTrailing: metrics.borderRadius - 8, bottomLeading: metrics.borderRadius - 8, borderStyle: .primary)
+                } else {
+                    $0.roundedCorners(style: .large)
+                }
+            }
+            .padding(8)
         }
-        .padding(8)
         .ignoresSafeArea()
     }
     
@@ -78,17 +81,15 @@ public struct ContextWindow<Content: View, BottomContent: View>: View {
     
     
     var toolbarView: some View {
-        VStack {
-            ContextToolbar(items: $toolbarItems, titleConfig: toolbarTitleConfig)
-                .background {
-                    GeometryReader { geo in
-                        Color.clear
-                            .onChange(of: geo.size) { value in
-                                toolbarHeight = value.height
-                            }
-                    }
+        ContextToolbar(items: $toolbarItems, titleConfig: toolbarTitleConfig)
+            .background {
+                GeometryReader { geo in
+                    Color.clear
+                        .onChange(of: geo.size) { value in
+                            toolbarHeight = value.height
+                        }
                 }
-        }
+            }
     }
     
     
@@ -116,43 +117,39 @@ public struct ContextWindow<Content: View, BottomContent: View>: View {
 
 #Preview {
     PreviewScaffold(backgroundColor: .drapDarkGray, disablePadding: true) {
-        VStack {
-            Spacer()
-            
-            ContextWindow {
-                VStack {
-                    Rectangle()
-                        .foregroundStyle(Color.drapQuaternaryText)
-                }
-                .contextToolbarTitle("Titre de la fenêtre", description: "Ceci est une description")
-                .contextToolbar {
-                    ContextToolbarButton(placement: .leading) {
-                        DrapButton(icon: "chevron.left") {
-                            print("")
-                        }
-                        .style(.actionBar)
+        ContextWindow {
+            VStack {
+                Rectangle()
+                    .foregroundStyle(Color.drapQuaternaryText)
+            }
+            .contextToolbarTitle("Titre de la fenêtre", description: "Ceci est une description")
+            .contextToolbar {
+                ContextToolbarButton(placement: .leading) {
+                    DrapButton(icon: "chevron.left") {
+                        print("")
                     }
-                    
-                    ContextToolbarButton(placement: .trailing) {
-                        DrapButton(icon: "qrcode.viewfinder", title: "QR Code") {
-                            print("")
-                        }
-                        .style(.actionBar)
-                    }
+                    .style(.actionBar)
                 }
-            } bottomContent: {
-                Text("Appuyez sur “Scanner la balise” et collez votre appareil sur celle-ci")
-                    .contextWindowDescription()
                 
-                DrapButton(icon: "square.split.diagonal.fill", title: "Scanner la balise") {
-                    print("")
+                ContextToolbarButton(placement: .trailing) {
+                    DrapButton(icon: "qrcode.viewfinder", title: "QR Code") {
+                        print("")
+                    }
+                    .style(.actionBar)
                 }
             }
-            .style(.stack)
-            .drapButtonExpand()
-            .drapButtonTint(.drapBlue)
+        } bottomContent: {
+            Text("Appuyez sur “Scanner la balise” et collez votre appareil sur celle-ci")
+                .contextWindowDescription()
+            
+            DrapButton(icon: "square.split.diagonal.fill", title: "Scanner la balise") {
+                print("")
+            }
         }
+        .style(.stack)
+        .drapButtonExpand()
+        .drapButtonFormat(.capsule)
+        .drapButtonTint(.drapBlue)
     }
-    .ignoresSafeArea()
 }
 

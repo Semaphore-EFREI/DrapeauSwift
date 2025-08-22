@@ -9,13 +9,13 @@ import SwiftUI
 import Styles
 
 
-/*
+
 public struct DrApp<Content: View>: View {
     
     // MARK: Attributes
     
     @StateObject var metrics = ScreenMetrics()
-    @StateObject var drapManager = DrapContextWindowManager()
+    //@StateObject var drapManager = DrapContextWindowManager()
     public var content: Content
     
     
@@ -53,15 +53,15 @@ public struct DrApp<Content: View>: View {
                 
                 content
                 
-                contextView
-                    .ignoresSafeArea()
+                //contextView
+                    //.ignoresSafeArea()
             }
             .environmentObject(metrics)
-            .environmentObject(drapManager)
+            //.environmentObject(drapManager)
         }
     }
     
-    
+    /*
     var contextView: some View {
         ZStack {
             if drapManager.isPresented, drapManager.firstWindow != nil || drapManager.secondWindow != nil {
@@ -90,7 +90,7 @@ public struct DrApp<Content: View>: View {
                 }
             }
         }
-    }
+    }*/
 }
 
 
@@ -102,4 +102,4 @@ public struct DrApp<Content: View>: View {
         Text("Drapeau")
     }
 }
-*/
+

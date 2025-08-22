@@ -242,7 +242,7 @@ struct ContextToolbarContentBuilder {
 
 
 
-// MARK: - Modificateur .myToolbar (émet des préférences)
+// MARK: - Modificateur .contextToolbar (émet des préférences)
 
 struct ContextToolbarModifier<C: ContextToolbarContent>: ViewModifier {
     private let collected: [ErasedContextToolbarItem]
@@ -263,93 +263,3 @@ extension View {
         modifier(ContextToolbarModifier(content: content))
     }
 }
-
-
-
-// MARK: - Hôte (collecte et rend la barre)
-
-// Doit être la ContextWindow
-struct ContextNavigationHost<Content: View>: View {
-    let content: Content
-    @State private var items: [ErasedContextToolbarItem] = []
-
-    init(@ViewBuilder content: () -> Content) {
-        self.content = content()
-    }
-
-    var body: some View {
-        ZStack(alignment: .top) {
-            content
-                .onPreferenceChange(ContextToolbarPreferenceKey.self) { value in
-                    items = value
-                }
-                .padding(.top, 52)
-
-            // Cette partie doit être la ContextToolbar (avec des
-            HStack {
-                HStack(spacing: 8) {
-                    ForEach(items.filter { $0.placement == .leading }) { it in it.makeBody() }
-                }
-                Spacer()
-                HStack(spacing: 8) {
-                    ForEach(items.filter { $0.placement == .trailing }) { it in it.makeBody() }
-                }
-            }
-            .frame(height: 52)
-            .padding(.horizontal)
-            .background(.thinMaterial)
-            .overlay(Divider(), alignment: .bottom)
-        }
-    }
-}
-
-
-
-// MARK: - Démo
-
-/*
-struct DemoContextToolbar: View {
-    @State private var count = 0
-    @State private var on = false
-    
-    var body: some View {
-        VStack(spacing: 16) {
-            Text("En dehors du host : ceci ne sera pas collecté")
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-            
-            // ❌ En dehors du host : la préférence n'atteint pas l’hôte
-            Color.clear
-                .contextToolbar {
-                    ContextToolbarItem(placement: .trailing) {
-                        Button("Ghost") { count += 1 }
-                    }
-                }
-            
-            Divider()
-            
-            // ✅ À l’intérieur : items collectés et rendus
-            ContextNavigationHost {
-                List(0..<8, id: \.self) { i in
-                    Text("Ligne \(i)")
-                }
-                .contextToolbar {
-                    ContextToolbarItem(placement: .leading) {
-                        Button("Back") { /* ... */ }
-                    }
-                    if count % 2 == 0 {
-                        ContextToolbarItem(placement: .trailing) {
-                            Button("+\(count)") { count += 1 }
-                        }
-                    } else {
-                        ContextToolbarItem(placement: .trailing) {
-                            Button("Reset") { count = 0 }
-                        }
-                    }
-                }
-            }
-        }
-        .padding()
-    }
-}
-*/
