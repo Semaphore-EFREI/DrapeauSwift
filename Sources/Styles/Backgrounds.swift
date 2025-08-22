@@ -16,7 +16,7 @@ public extension View {
                 if #available(iOS 26.0, macOS 26.0, *) {
                     $0
                         .if(showGlassEffect) {
-                            $0.glassEffect(.regular.tint(backgroundColor).interactive(interactive), in: .rect(cornerRadius: cornersStyle.rawValue, style: .continuous))
+                            $0.glassEffect(.regular.tint(backgroundColor).interactive(interactive)/*, in: .rect(cornerRadius: cornersStyle.rawValue, style: .continuous)*/)
                         }
                 } else {
                     $0

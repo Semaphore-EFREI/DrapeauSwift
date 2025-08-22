@@ -8,259 +8,350 @@
 import SwiftUI
 
 
-private struct _OverlayRoot<Content: View>: View {
-    let dismissOnBackgroundTap: Bool
-    @Binding var show: Bool
-    let onRequestDismiss: () -> Void
-    @ViewBuilder let content: () -> Content
-
-    let dimOpacity: Double = 0.4
-    @State private var visible = false
-
-    
-    var body: some View {
-        ZStack {
-            if visible {
-                if dimOpacity > 0 {
-                    Color.black.opacity(dimOpacity)
-                        .ignoresSafeArea()
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            if dismissOnBackgroundTap {
-                                show = false
-                            }
-                        }
-                        .transition(.opacity)
-                        .zIndex(1)
-                }
-                // Caller layouts freely (centered, bottom sheet, etc.)
-                content()
-                    .transition(.move(edge: .bottom))
-                    .zIndex(2)
-            }
-        }
-        .onAppear {
-            withAnimation(.spring(response: 0.24, dampingFraction: 0.85)) {
-                visible = true
-            }
-        }
-        .onChange(of: show) { show in
-            guard !show else { return }
-            withAnimation(.spring(response: 0.24, dampingFraction: 0.85)) {
-                visible = false
-            }
-            // let the transition complete before asking the presenter to dismiss the container
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.24) {
-                onRequestDismiss()
-            }
-        }
-    }
-}
-
-
-
-
 
 // MARK: iOS/tvOS implementation
 #if os(iOS) || os(tvOS)
 import UIKit
 
 
-private struct _TopOverlayPresenter<Overlay: View>: UIViewControllerRepresentable {
-    @Binding var show: Bool                 // État externe (demande l'affichage ou la suppression de la vue)
-    @State var isPresented: Bool = false    // État interne (passe sur faux une fois l'animation de disparition terminée)
-    let dismissOnBackgroundTap: Bool
-    let builder: () -> Overlay
+// Global coordinator that manages a stack of UIViewControllers (no AnyView)
+@MainActor
+private final class _OverlayHub {
+    static let shared = _OverlayHub()
 
-    final class Coordinator: NSObject {
-        var host: UIViewController?
+    // UIKit host container (one per app)
+    private weak var containerVC: _OverlayContainerController?
+    private weak var anchorVC: UIViewController?
+
+    // Logical stack of hosts (top is last)
+    private var stack: [UIViewController] = []
+
+    // Removal callbacks to reset per-call-site bindings
+    private var removalHandlers: [ObjectIdentifier: () -> Void] = [:]
+
+    func register(host: UIViewController, onRemove: @escaping () -> Void) {
+        removalHandlers[ObjectIdentifier(host)] = onRemove
     }
 
-    func makeCoordinator() -> Coordinator { Coordinator() }
-
-    func makeUIViewController(context: Context) -> UIViewController {
-        UIViewController() // anchor VC
+    func unregister(host: UIViewController) {
+        removalHandlers.removeValue(forKey: ObjectIdentifier(host))
     }
 
-    
-    func updateUIViewController(_ vc: UIViewController, context: Context) {
-        let presented = (context.coordinator.host != nil)
-        
-        switch (presented, show) {
-        case (false, true):
-            // Container VC with clear background
-            let container = _TransparentContainerController()
-            container.modalPresentationStyle = .overFullScreen
-            
-            // Build SwiftUI content inside a hosting with a dim beneath it
-            let overlayRoot = _OverlayRoot(
-                dismissOnBackgroundTap: dismissOnBackgroundTap,
-                show: $show,
-                onRequestDismiss: { [weak coord = context.coordinator] in
-                    guard let container = coord?.host as? _TransparentContainerController else { return }
-                    self.isPresented = false
-                    container.dismiss(animated: false)
-                    coord?.host = nil
-                },
-                content: builder
-            )
-            let host = UIHostingController(rootView: overlayRoot)
-            host.view.backgroundColor = .clear
-            container.embed(host)
+    private func notifyRemoval(of host: UIViewController) {
+        if let cb = removalHandlers.removeValue(forKey: ObjectIdentifier(host)) {
+            cb()
+        }
+    }
 
-            vc.present(container, animated: false)
-            context.coordinator.host = container
+    // Attach an anchor to present from
+    func attachAnchor(_ vc: UIViewController) {
+        anchorVC = vc
+        ensureContainer()
+    }
 
-        case (true, false):
-            guard let container = context.coordinator.host as? _TransparentContainerController,
-               let _ = container.children.first as? UIHostingController<_OverlayRoot<Overlay>> else {
-                // Fallback if hosting not found
-                context.coordinator.host?.presentingViewController?.dismiss(animated: false)
-                context.coordinator.host = nil
-                return
+    // Push a new overlay host
+    func push(_ host: UIViewController) {
+        ensureContainer()
+        guard let container = containerVC else { return }
+        let had = !stack.isEmpty
+        stack.append(host)
+        if had {
+            container.pushReplace(new: host, previous: stack[stack.count - 2])
+        } else {
+            container.pushFirst(host)
+        }
+    }
+
+    // Pop the top overlay
+    func popTop() {
+        guard let container = containerVC, !stack.isEmpty else { return }
+        if stack.count == 1 {
+            let last = stack.removeLast()
+            notifyRemoval(of: last)
+            container.popLast(last) { [weak self] in
+                self?.dismissContainer()
             }
-        case (true, true):
-            // Update the SwiftUI tree by resetting rootView
-            if let container = context.coordinator.host as? _TransparentContainerController,
-               let hosting = container.children.first as? UIHostingController<_OverlayRoot<Overlay>> {
-                hosting.rootView = _OverlayRoot(
-                    dismissOnBackgroundTap: dismissOnBackgroundTap,
-                    show: $show,
-                    onRequestDismiss: { [weak coord = context.coordinator] in
-                        guard let container = coord?.host as? _TransparentContainerController else { return }
-                        self.isPresented = false
-                        container.dismiss(animated: false)
-                        coord?.host = nil
-                    },
-                    content: builder
-                )
+        } else {
+            let top = stack.removeLast()
+            notifyRemoval(of: top)
+            let reveal = stack.last!
+            container.popReveal(top: top, reveal: reveal)
+        }
+    }
+
+    func resetAll() {
+        guard let container = containerVC, !stack.isEmpty else { return }
+        let top = stack.removeLast()
+        // Notify all entries (including top)
+        notifyRemoval(of: top)
+        for vc in stack { notifyRemoval(of: vc) }
+        stack.removeAll()
+        container.popAllDown(currentTop: top) { [weak self] in
+            self?.dismissContainer()
+        }
+    }
+
+    // Ensure the modal container is presented
+    private func ensureContainer() {
+        guard containerVC == nil, let presenter = anchorVC else { return }
+        let container = _OverlayContainerController()
+        container.modalPresentationStyle = .overFullScreen
+        container.view.backgroundColor = .clear
+        presenter.present(container, animated: false)
+        containerVC = container
+    }
+
+    private func dismissContainer() {
+        containerVC?.presentingViewController?.dismiss(animated: false)
+        containerVC = nil
+    }
+}
+
+
+
+// The container view controller handles dim + directional animations
+@MainActor
+private final class _OverlayContainerController: UIViewController {
+    private let dimView = UIView()
+    private let transitionDuration: TimeInterval = 0.35
+
+    private var pendingFirstHost: UIViewController?
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        if let host = pendingFirstHost, view.bounds.height > 0 {
+            // Run the deferred first push now that we have valid bounds
+            pendingFirstHost = nil
+            pushFirst(host)
+        }
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .clear
+        dimView.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+        dimView.alpha = 0
+        dimView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(dimView)
+        NSLayoutConstraint.activate([
+            dimView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            dimView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            dimView.topAnchor.constraint(equalTo: view.topAnchor),
+            dimView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
+
+        let tap = UITapGestureRecognizer(target: self, action: #selector(onBackgroundTap))
+        dimView.addGestureRecognizer(tap)
+    }
+
+    @objc private func onBackgroundTap() {
+        _OverlayHub.shared.popTop()
+    }
+
+    // First push: from bottom, fade in dim
+    func pushFirst(_ host: UIViewController) {
+        guard view.bounds.height > 0 else {
+            // Defer until after the first layout pass
+            pendingFirstHost = host
+            return
+        }
+        addChild(host)
+        guard let hv = host.view else { return }
+        hv.translatesAutoresizingMaskIntoConstraints = true
+        let end = view.bounds
+        var start = end
+        start.origin.y += end.height
+        hv.frame = start
+        view.addSubview(hv)
+        host.didMove(toParent: self)
+
+        // Ensure initial state is committed before animating
+        view.layoutIfNeeded()
+        DispatchQueue.main.async {
+            UIView.animate(withDuration: self.transitionDuration,
+                           delay: 0,
+                           usingSpringWithDamping: 0.9,
+                           initialSpringVelocity: 0,
+                           options: [.beginFromCurrentState]) {
+                self.dimView.alpha = 1
+                hv.frame = end
             }
-        case (false, false):
-            break
+        }
+    }
+
+    // Replace: new enters from right, previous slides to left (stays in hierarchy but behind)
+    func pushReplace(new: UIViewController, previous: UIViewController) {
+        addChild(new)
+        let nv = new.view!
+        let pv = previous.view!
+        nv.translatesAutoresizingMaskIntoConstraints = true
+        pv.translatesAutoresizingMaskIntoConstraints = true
+        nv.frame = view.bounds.offsetBy(dx: view.bounds.width, dy: 0)
+        view.addSubview(nv)
+        new.didMove(toParent: self)
+
+        // Ensure z-order: previous below new during animation
+        view.bringSubviewToFront(nv)
+
+        UIView.animate(withDuration: transitionDuration, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0, options: [.beginFromCurrentState]) {
+            nv.frame = self.view.bounds
+            pv.frame = self.view.bounds.offsetBy(dx: -self.view.bounds.width, dy: 0)
+        } completion: { _ in
+            // Keep previous attached but off-screen; it's still in the stack managed by hub
+        }
+    }
+
+    // Pop to reveal previous: top exits to right, previous returns from left
+    func popReveal(top: UIViewController, reveal: UIViewController) {
+        let tv = top.view!
+        let rv = reveal.view!
+        tv.translatesAutoresizingMaskIntoConstraints = true
+        rv.translatesAutoresizingMaskIntoConstraints = true
+
+        // Make sure reveal is in hierarchy
+        if rv.superview == nil {
+            addChild(reveal)
+            rv.frame = view.bounds.offsetBy(dx: -view.bounds.width, dy: 0)
+            view.addSubview(rv)
+            reveal.didMove(toParent: self)
+        }
+        view.bringSubviewToFront(tv)
+        view.bringSubviewToFront(rv)
+
+        UIView.animate(withDuration: transitionDuration, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0, options: [.beginFromCurrentState]) {
+            tv.frame = self.view.bounds.offsetBy(dx: self.view.bounds.width, dy: 0)
+            rv.frame = self.view.bounds
+        } completion: { _ in
+            // Remove top from hierarchy
+            top.willMove(toParent: nil)
+            tv.removeFromSuperview()
+            top.removeFromParent()
+            _OverlayHub.shared.unregister(host: top)
+        }
+    }
+
+    // Pop last: exit down and fade out dim
+    func popLast(_ last: UIViewController, completion: @escaping () -> Void) {
+        let lv = last.view!
+        lv.translatesAutoresizingMaskIntoConstraints = true
+        UIView.animate(withDuration: transitionDuration, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0, options: [.beginFromCurrentState]) {
+            self.dimView.alpha = 0
+            lv.frame = self.view.bounds.offsetBy(dx: 0, dy: self.view.bounds.height)
+        } completion: { _ in
+            last.willMove(toParent: nil)
+            lv.removeFromSuperview()
+            last.removeFromParent()
+            completion()
+            _OverlayHub.shared.unregister(host: last)
+        }
+    }
+
+    // Pop everything at once: animate current top down and remove all
+    func popAllDown(currentTop: UIViewController, completion: @escaping () -> Void) {
+        // Remove all other children immediately (they are off-screen)
+        for child in children where child !== currentTop {
+            child.willMove(toParent: nil)
+            child.view.removeFromSuperview()
+            child.removeFromParent()
+        }
+        guard let lv = currentTop.view else { completion(); return }
+        lv.translatesAutoresizingMaskIntoConstraints = true
+        UIView.animate(withDuration: transitionDuration, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0, options: [.beginFromCurrentState]) {
+            self.dimView.alpha = 0
+            lv.frame = self.view.bounds.offsetBy(dx: 0, dy: self.view.bounds.height)
+        } completion: { _ in
+            currentTop.willMove(toParent: nil)
+            lv.removeFromSuperview()
+            currentTop.removeFromParent()
+            completion()
         }
     }
 }
 
-private final class _TransparentContainerController: UIViewController {
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .clear
-    }
-
-    func embed(_ child: UIViewController) {
-        addChild(child)
-        child.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(child.view)
-        NSLayoutConstraint.activate([
-            child.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            child.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            child.view.topAnchor.constraint(equalTo: view.topAnchor),
-            child.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-        child.didMove(toParent: self)
-    }
-}
-#endif
 
 
-
-
-
-// MARK: macOS implementation
-#if os(macOS)
-import AppKit
-
-
-private struct _TopOverlayPresenter<Overlay: View>: NSViewControllerRepresentable {
-    @Binding var show: Bool                 // État externe (demande l'affichage ou la suppression de la vue)
-    @State var isPresented: Bool = false    // État interne (passe sur faux une fois l'animation de disparition terminée)
+// Presenter modifier each call-site uses to request push/pop on the hub (no AnyView involved)
+private struct _TopOverlayPresenter<Overlay: View>: UIViewControllerRepresentable {
+    @Binding var show: Bool
     let dismissOnBackgroundTap: Bool
     let builder: () -> Overlay
 
     final class Coordinator {
-        weak var overlayWindow: NSWindow?
+        var host: UIViewController?
+        var showBinding: Binding<Bool>?
     }
-
     func makeCoordinator() -> Coordinator { Coordinator() }
 
-    func makeNSViewController(context: Context) -> NSViewController { NSViewController() }
+    func makeUIViewController(context: Context) -> UIViewController { UIViewController() }
 
-    func updateNSViewController(_ vc: NSViewController, context: Context) {
-        guard let parentWindow = vc.view.window ?? vc.view.nsWindowFromResponderChain() else { return }
-        let showing = (context.coordinator.overlayWindow != nil)
-        switch (showing, isPresented) {
-        case (false, true):
-            let host = NSHostingController(rootView:
-                _OverlayRoot(
-                    dismissOnBackgroundTap: dismissOnBackgroundTap,
-                    show: $show,
-                    onRequestDismiss: {
-                        if let w = context.coordinator.overlayWindow {
-                            w.orderOut(nil)
-                            w.parent?.removeChildWindow(w)
-                            context.coordinator.overlayWindow = nil
-                        }
-                    },
-                    content: builder)
-            )
-            let window = NSWindow(contentViewController: host)
-            window.styleMask = [.borderless]
-            window.isOpaque = false
-            window.backgroundColor = .clear
-            window.level = .modalPanel
-            window.hasShadow = false
-            window.ignoresMouseEvents = false
-            window.isReleasedWhenClosed = false
+    func updateUIViewController(_ vc: UIViewController, context: Context) {
+        let hub = _OverlayHub.shared
+        hub.attachAnchor(vc)
+        context.coordinator.showBinding = $show
 
-            // Size to match parent and float above
-            if let frame = parentWindow.contentView?.bounds {
-                window.setFrame(parentWindow.convertToScreen(NSRect(origin: .zero, size: frame.size)), display: true)
-            }
-
-            parentWindow.addChildWindow(window, ordered: .above)
-            context.coordinator.overlayWindow = window
-
-        case (true, false):
-            guard let w = context.coordinator.overlayWindow,
-                  let host = w.contentViewController as? NSHostingController<_OverlayRoot<Overlay>> else {
-                if let w = context.coordinator.overlayWindow {
-                    w.orderOut(nil)
-                    w.parent?.removeChildWindow(w)
-                    context.coordinator.overlayWindow = nil
+        if show {
+            if context.coordinator.host == nil {
+                // Build a concrete hosting controller for this overlay type
+                let root = _OverlayShell(dismissOnBackgroundTap: dismissOnBackgroundTap) {
+                    builder()
+                } onDismissRequest: {
+                    // Background tap or internal request
+                    hub.popTop()
                 }
-                return
+                let host = UIHostingController(rootView: root)
+                host.view.backgroundColor = .clear
+                context.coordinator.host = host
+                hub.register(host: host) { [weak coord = context.coordinator] in
+                    coord?.showBinding?.wrappedValue = false
+                    coord?.host = nil
+                }
+                hub.push(host)
             }
-        case (true, true):
-            if let w = context.coordinator.overlayWindow,
-               let host = w.contentViewController as? NSHostingController<_OverlayRoot<Overlay>> {
-                host.rootView = _OverlayRoot(
-                    dismissOnBackgroundTap: dismissOnBackgroundTap,
-                    show: $show,
-                    onRequestDismiss: {
-                        if let w = context.coordinator.overlayWindow {
-                            w.orderOut(nil)
-                            w.parent?.removeChildWindow(w)
-                            context.coordinator.overlayWindow = nil
-                        }
-                    },
-                    content: builder
-                )
+        } else {
+            if let host = context.coordinator.host {
+                // Request pop only if this host is currently on top; otherwise ignore
+                // (We do not need to compare IDs; hub always pops the visible top)
+                hub.popTop()
+                // Clean the reference after a slight delay to allow quick re-open
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    if context.coordinator.host === host { context.coordinator.host = nil }
+                }
+                hub.unregister(host: host)
             }
-
-        case (false, false):
-            break
         }
     }
 }
 
 
-private extension NSView {
-    func nsWindowFromResponderChain() -> NSWindow? {
-        sequence(first: self.nextResponder, next: { $0?.nextResponder })
-            .first { $0 is NSWindow } as? NSWindow
+
+// A minimal SwiftUI shell that gives the caller full layout control.
+private struct _OverlayShell<Content: View>: View {
+    let dismissOnBackgroundTap: Bool
+    @ViewBuilder var content: () -> Content
+    let onDismissRequest: () -> Void
+
+    var body: some View {
+        ZStack {
+            Color.clear.contentShape(Rectangle())
+                .onTapGesture { if dismissOnBackgroundTap { onDismissRequest() } }
+            content()
+        }
+        .ignoresSafeArea()
     }
 }
+
+
+
+public enum TopOverlayController {
+    @MainActor public static func popTop() { _OverlayHub.shared.popTop() }
+    @MainActor public static func resetAll() { _OverlayHub.shared.resetAll() }
+}
 #endif
+
+
+
+
+
 
 
 
@@ -286,8 +377,6 @@ public extension View {
                                         builder: content))
     }
 }
-
-
 
 
 
@@ -324,7 +413,7 @@ struct FileView2: View {
             Text("\(show)")
             
             Button {
-                show = true
+                show.toggle()
             } label: {
                 Text("Afficher")
             }
@@ -341,16 +430,19 @@ struct FileView2: View {
 
 struct ContextView: View {
     @EnvironmentObject var metrics: ScreenMetrics
+    @State var showDown: Bool = false
     @Binding var showUp: Bool
-    @State var showDown = false
+    
+    let colors: [Color] = [.drapBlue, .drapCyan, .drapRed, .drapOrange, .drapGreen, .drapQuaternaryText]
+    @State var color: Color = .drapQuaternaryText
     
     var body: some View {
         ContextWindow {
             VStack {
                 Rectangle()
-                    .foregroundStyle(Color.drapQuaternaryText)
+                    .foregroundStyle(color)
             }
-            .contextToolbarTitle("Titre de la fenêtre", description: "Ceci est une description")
+            .contextToolbarTitle("Fenêtre Contextuelle", description: "Fenêtre d'essai")
             .contextToolbar {
                 ContextToolbarButton(placement: .leading) {
                     DrapButton(icon: "chevron.left") {
@@ -360,8 +452,8 @@ struct ContextView: View {
                 }
                 
                 ContextToolbarButton(placement: .trailing) {
-                    DrapButton(icon: "qrcode.viewfinder", title: "QR Code") {
-                        print("")
+                    DrapButton(icon: "xmark") {
+                        TopOverlayController.resetAll()
                     }
                     .style(.actionBar)
                 }
@@ -378,6 +470,9 @@ struct ContextView: View {
         .drapButtonExpand()
         .drapButtonTint(.drapBlue)
         .environmentObject(metrics)
+        .onAppear {
+            color = colors.randomElement() ?? .drapQuaternaryText
+        }
         .topOverlay(show: $showDown) {
             ContextView(showUp: $showDown)
                 .environmentObject(metrics)

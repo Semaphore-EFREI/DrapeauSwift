@@ -39,7 +39,9 @@ public struct DrapButton<Style: DrapButtonStyle>: View {
         Button {
             config.action()
         } label: {
-            style.makeBody(configuration: config)
+            style
+                .makeBody(configuration: config)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .disabled(config.disabled)

@@ -70,11 +70,11 @@ public class ScreenMetrics: ObservableObject {
         case "iPhone13,3": 47.33                // iPhone 12 Pro
         case "iPhone13,4": 53.33                // iPhone 12 Pro Max
             
-        case "iPhone14,6": 46.0                 // iPhone SE 3e gen
+        case "iPhone14,6": 0.0                 // iPhone SE 3e gen
             
         case "iPhone17,1": 62.0                 // iPhone 16 Pro
         case "iPhone17,5": 47.33                // iPhone 16e
-        default: 46.0
+        default: 0.0
         }
     }
     

@@ -47,12 +47,16 @@ public struct ContextWindow<Content: View, BottomContent: View>: View {
             .frame(height: metrics.height / 2)
             .apply {
                 if #available(iOS 16.0, macOS 13.0, *) {
-                    $0.unevenRoundedCorners(style: .extraLarge, bottomTrailing: metrics.borderRadius - 8, bottomLeading: metrics.borderRadius - 8, borderStyle: .primary)
+                    let bottomCorners = metrics.borderRadius - 6
+                    $0
+                        .unevenRoundedCorners(style: .extraLarge, bottomTrailing: bottomCorners, bottomLeading: bottomCorners, borderStyle: .primary)
+                        .padding(metrics.borderRadius == 0.0 ? 0 : 6)
                 } else {
-                    $0.roundedCorners(style: .large)
+                    $0
+                        .roundedCorners(style: .large)
+                        .padding(6)
                 }
             }
-            .padding(8)
         }
         .ignoresSafeArea()
     }
@@ -71,7 +75,7 @@ public struct ContextWindow<Content: View, BottomContent: View>: View {
             VStack(spacing: 16) {
                 bottomContent
             }
-            .padding([.horizontal, .bottom], metrics.borderRadius / 2)
+            .padding([.horizontal, .bottom], metrics.borderRadius == 0.0 ? 24 : metrics.borderRadius / 2)
             .padding(.top, 20)
         }
         .padding(.top, contentStyle == .inline ? toolbarHeight : 0)
