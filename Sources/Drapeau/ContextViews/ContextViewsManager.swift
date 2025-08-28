@@ -428,7 +428,7 @@ struct FileView2: View {
 
 
 
-struct ContextView: View {
+struct ContextView: ContextWindowProtocol {
     @EnvironmentObject var metrics: ScreenMetrics
     @State var showDown: Bool = false
     @Binding var showUp: Bool

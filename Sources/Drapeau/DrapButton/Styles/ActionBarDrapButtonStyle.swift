@@ -48,7 +48,7 @@ public struct ActionBarDrapButtonStyle: DrapButtonStyle {
                         .drapButton()
                 }
             }
-            .foregroundStyle(tint)
+            .foregroundStyle(foregroundColor)
             .padding(.horizontal, padding.width)
             .padding(.vertical, padding.height)
             .frame(minWidth: minSize?.width, minHeight: minSize?.height)
@@ -76,10 +76,10 @@ public struct ActionBarDrapButtonStyle: DrapButtonStyle {
                 if configuration.title != nil {
                     .init(width: 15, height: 13)
                 } else {
-                    .init(width: 10, height: 6)
+                    .init(width: 0, height: 0) //.init(width: 10, height: 6)
                 }
             default:
-                .init(width: 10, height: 6)
+                .init(width: 0, height: 0) //.init(width: 10, height: 6)
             }
         }
         
@@ -95,6 +95,16 @@ public struct ActionBarDrapButtonStyle: DrapButtonStyle {
                 }
             default:
                 nil
+            }
+        }
+        
+        
+        /// Définit la couleur de face à appliquer selon plusieurs critères
+        var foregroundColor: Color {
+            if #available(iOS 26.0, macOS 26.0, *) {
+                .drapPrimaryText
+            } else {
+                tint
             }
         }
         

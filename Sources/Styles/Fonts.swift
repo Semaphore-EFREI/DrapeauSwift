@@ -11,7 +11,7 @@ import SwiftUI
 /// Ne peut s'appliquer qu'à du texte
 public extension Text {
     func drapTitle() -> Text {
-        self.font(Font.custom("Montserrat", size: 24).weight(.semibold))
+        self.font(Font.custom("Montserrat", size: 28).weight(.semibold))
     }
     
     func drapPageTitle() -> Text {

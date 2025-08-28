@@ -9,7 +9,11 @@ import SwiftUI
 import Styles
 
 
-public struct ContextWindow<Content: View, BottomContent: View>: View {
+/// Protocol vide pour que `ContextWindow` soit différentiable des autres `View`
+protocol ContextWindowProtocol: View {}
+
+
+public struct ContextWindow<Content: View, BottomContent: View>: ContextWindowProtocol {
     
     // MARK: Attributes
     
