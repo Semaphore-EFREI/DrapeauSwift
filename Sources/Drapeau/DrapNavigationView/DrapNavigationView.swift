@@ -98,6 +98,7 @@ public struct DrapNavigationView<Item: Hashable, TabLabel: View, Content: View>:
 
 
 // MARK: - Scrollable, centered tab strip
+@available(iOS 26.0, macOS 26.0, *)
 private struct _ScrollableCenteredTabs<Item: Hashable, Label: View>: View {
     let items: [Item]
     @Binding var selection: Item
@@ -122,6 +123,7 @@ private struct _ScrollableCenteredTabs<Item: Hashable, Label: View>: View {
                 }
                 .padding(.horizontal, 16)
             }
+            .scrollDisabled(true)
             .onAppear { center(on: selection, in: proxy) }
             .onChange(of: selection) { newValue in center(on: newValue, in: proxy) }
         }

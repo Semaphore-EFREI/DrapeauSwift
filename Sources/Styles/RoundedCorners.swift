@@ -80,6 +80,7 @@ public extension View {
 
 /// Valeurs fixes pour l'arrondi des coins
 public enum RoundedCornersStyle: CGFloat {
+    case small = 12
     case regular = 16
     case medium = 24
     case large = 32

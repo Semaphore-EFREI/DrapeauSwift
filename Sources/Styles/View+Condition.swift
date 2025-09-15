@@ -24,7 +24,7 @@ extension View {
     ///     }
     ///
     @ViewBuilder
-    public func `if`<Content: View>(_ condition: Bool, _ transform: (Self) -> Content) -> some View {
+    public func `if`<Content: View>(_ condition: Bool, @ViewBuilder _ transform: (Self) -> Content) -> some View {
         if condition {
             transform(self)
         } else {
