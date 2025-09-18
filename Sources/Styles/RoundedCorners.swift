@@ -93,5 +93,5 @@ public enum RoundedCornersStyle: CGFloat {
 /// Valeurs fixes pour l'opacité des coins
 public enum BorderStyle: Double {
     case primary = 0.24
-    case secondary = 0.8
+    case secondary = 0.08
 }

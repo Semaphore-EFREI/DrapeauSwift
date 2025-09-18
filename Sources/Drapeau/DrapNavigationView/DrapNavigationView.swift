@@ -9,39 +9,34 @@ import SwiftUI
 import Styles
 
 
+// TODO: Changer ce nom
 @available(iOS 26.0, macOS 26.0, *)
-public struct DrapNavigationView<Item: Hashable, TabLabel: View, Content: View>: View {
+public struct DrapNavigationView<Content: View>: View {
     
     // MARK: Public API
     
-    private let items: [Item]
-    @ViewBuilder private let tabLabel: (Item, Bool) -> TabLabel
-    @ViewBuilder private let page: (Item) -> Content
     private let navigationTitle: String
-
+    @ViewBuilder private let page: (Date) -> Content
+    private let hasData: (Date) -> Bool
+    
     
     // MARK: State
     
-    @State private var selection: Item
-
+    @State private var selection = Date()
+    
     
     
     // MARK: Init
     
     public init(
-        _ items: [Item],
-        initial: Item? = nil,
         navigationTitle: String = "Aujourd'hui",
-        @ViewBuilder tabLabel: @escaping (Item, Bool) -> TabLabel,
-        @ViewBuilder content: @escaping (Item) -> Content
+        @ViewBuilder content: @escaping (Date) -> Content,
+        hasData: @escaping (Date) -> Bool
     ) {
-        precondition(!items.isEmpty, "DrapNavigationView requires at least one item")
-        self.items = items
-        self.tabLabel = tabLabel
-        self.page = content
         self.navigationTitle = navigationTitle
-        self._selection = State(initialValue: initial ?? items[items.startIndex])
-
+        self.page = content
+        self.hasData = hasData
+        
         #if os(iOS)
         let montserratSmall = UIFont(name: "Montserrat-Medium", size: 17) ?? UIFont.systemFont(ofSize: 15)
         UINavigationBar.appearance().titleTextAttributes = [.font: montserratSmall]
@@ -50,130 +45,71 @@ public struct DrapNavigationView<Item: Hashable, TabLabel: View, Content: View>:
         UINavigationBar.appearance().titleTextAttributes = [.font: montserratSmall]
         #endif
     }
-
+    
     
     
     // MARK: Body
     
     public var body: some View {
-        TabView(selection: $selection) {
-            ForEach(items, id: \.self) { item in
-                NavigationStack {
-                    ScrollView {
-                        page(item)
-                            .tag(item)
-                    }
-                    .navigationTitle(navigationTitle)
-                    .toolbar { toolbarLargeTitle }
-                }
+        NavigationStack {
+            ScrollView {
+                page(selection)
             }
-        }
-        .ignoresSafeArea()
-        .tabViewStyle(.page(indexDisplayMode: .never))
-    }
-
-
-    // MARK: Toolbar (Large Title with scrollable, centered tabs)
-    
-    private var toolbarLargeTitle: some ToolbarContent {
-        ToolbarItem(placement: .largeTitle) {
-            VStack(spacing: 16) {
-                Image(systemName: "31.calendar")
-                    .font(.system(size: 36, weight: .medium))
-                
-                _ScrollableCenteredTabs(
-                    items: items,
-                    selection: $selection,
-                    tabLabel: tabLabel
-                )
-            }
-            .padding(.vertical, 10)
-            .padding(.horizontal, -16) // compense le padding par défaut du ToolbarItem
-        }
-    }
-}
-
-
-
-
-
-// MARK: - Scrollable, centered tab strip
-@available(iOS 26.0, macOS 26.0, *)
-private struct _ScrollableCenteredTabs<Item: Hashable, Label: View>: View {
-    let items: [Item]
-    @Binding var selection: Item
-    @ViewBuilder var tabLabel: (Item, Bool) -> Label
-
-    var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 24) {
-                    // Spacers pour centrer les extrémités
-                    Color.clear.frame(width: 100, height: 1).id("_leading")
-                    ForEach(items, id: \.self) { item in
-                        _TabButton(
-                            isSelected: selection == item
-                        ) {
-                            tabLabel(item, selection == item)
+            .navigationTitle(navigationTitle)
+            .toolbar {
+                ToolbarItem(placement: .largeTitle) {
+                    VStack(spacing: 0) {
+                        HStack {
+                            Text(selectedMonth)
+                            
+                            Text(selectedYear)
+                                .foregroundStyle(Color.drapSecondaryText)
                         }
-                        .id(item)
-                        .onTapGesture { withAnimation(.snappy) { selection = item } }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .drapPageTitle()
+                        
+                        DateSelectorView(selectedDate: $selection) { date in
+                            hasData(date)
+                        }
                     }
-                    Color.clear.frame(width: 100, height: 1).id("_trailing")
                 }
-                .padding(.horizontal, 16)
             }
-            .scrollDisabled(true)
-            .onAppear { center(on: selection, in: proxy) }
-            .onChange(of: selection) { newValue in center(on: newValue, in: proxy) }
         }
     }
-
-    private func center(on id: Item, in proxy: ScrollViewProxy) {
-        // On tente de centrer sur l’élément; si indisponible (au tout début), on tombera en no-op.
-        DispatchQueue.main.async {
-            withAnimation(.snappy) { proxy.scrollTo(id, anchor: .center) }
-        }
+    
+    
+    
+    // MARK: Computed Properties
+    
+    var selectedMonth: String {
+        let formatter = DateFormatter()
+        formatter.locale = .current
+        formatter.dateFormat = "LLLL"
+        return formatter.string(from: selection).capitalized
+    }
+    
+    var selectedYear: String {
+        let formatter = DateFormatter()
+        formatter.locale = .current
+        formatter.dateFormat = "yyyy"
+        return formatter.string(from: selection).capitalized
     }
 }
-
-
-
-private struct _TabButton<Label: View>: View {
-    let isSelected: Bool
-    @ViewBuilder var label: () -> Label
-
-    var body: some View {
-        label()
-            .contentShape(Rectangle())
-            .accessibilityAddTraits(isSelected ? .isSelected : [])
-    }
-}
-
-
 
 
 
 // MARK: - Preview
 @available(iOS 26.0, macOS 26.0, *)
 #Preview {
-    let days = (-5...5).map { offset in
-        Calendar.current.date(byAdding: .day, value: offset, to: Date())!.timeIntervalSince1970.rounded() // Hashable ID via Double
-    }
-    
-    return PreviewScaffold(disablePadding: true) {
-        DrapNavigationView(days, initial: days[5]) { item, isSelected in
-            let date = Date(timeIntervalSince1970: item)
-            Text(date.formatted(date: .abbreviated, time: .omitted))
-                .drapTitle()
-                .foregroundStyle(isSelected ? Color.drapPrimaryText : Color.drapQuaternaryText)
-        } content: { item in
-            let date = Date(timeIntervalSince1970: item)
+    PreviewScaffold(disablePadding: true) {
+        DrapNavigationView(navigationTitle: "Navbar") { date in
             VStack(spacing: 24) {
                 Text("Contenu du \(date.formatted(date: .complete, time: .omitted))")
                 Rectangle().frame(width: 120, height: 800)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } hasData: { date in
+            return date.isSameDayAs(Date(timeIntervalSince1970: 1758317975))
         }
     }
     

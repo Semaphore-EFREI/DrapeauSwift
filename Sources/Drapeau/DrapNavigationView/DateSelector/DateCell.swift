@@ -14,7 +14,7 @@ struct DateCell: View {
     // MARK: Attributes
     
     var date: Date
-    var isEmpty: Bool
+    var hasData: Bool
     @Binding var selectedDate: Date
     let animation: Namespace.ID
     
@@ -31,6 +31,7 @@ struct DateCell: View {
         }
         .padding(.vertical, 12)
         .frame(maxWidth: .infinity)
+        .contentShape(Rectangle())
         .foregroundStyle(foregroundColor)
         .background {
             if isSelected {
@@ -68,34 +69,35 @@ struct DateCell: View {
     
     
     var tintColor: Color {
-        if Calendar.autoupdatingCurrent.isDateInToday(date) {
+        if isToday {
             return .drapBlue
-        } else if isEmpty {
-            return .drapSecondaryText
+        } else if hasData {
+            return .drapPrimaryText
         }
-        return .drapPrimaryText
+        return .drapSecondaryText
     }
     
     var foregroundColor: Color {
-        if isSelected && Calendar.autoupdatingCurrent.isDateInToday(date) {
+        if isSelected && isToday {
             return Color.drapInverseText
         }
         return tintColor
     }
     
     var backgroundColor: Color {
-        if isSelected {
-            if Calendar.autoupdatingCurrent.isDateInToday(date) {
-                return tintColor
-            }
-            return tintColor.opacity(0.2)
+        if isToday {
+            return tintColor
         }
-        return Color.clear
+        return tintColor.opacity(0.2)
     }
     
     
     var isSelected: Bool {
-        Calendar.autoupdatingCurrent.isDate(date, inSameDayAs: selectedDate)
+        date.isSameDayAs(selectedDate)
+    }
+    
+    var isToday: Bool {
+        date.isSameDayAs(Date())
     }
 }
 
@@ -107,7 +109,7 @@ struct DateCell: View {
     @Namespace var animation
     
     return PreviewScaffold {
-        DateCell(date: Date(), isEmpty: false, selectedDate: .constant(Date(timeIntervalSince1970: 0)), animation: animation)
+        DateCell(date: Date(), hasData: false, selectedDate: .constant(Date(timeIntervalSince1970: 0)), animation: animation)
             .frame(width: 50)
     }
 }
