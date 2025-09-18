@@ -89,4 +89,22 @@ extension Date {
         var id: UUID = .init()
         var date: Date
     }
+    
+    
+    
+    /// Obtient l'heure de la date formaté en Texte
+    var time: String {
+        let formatter = DateFormatter()
+        formatter.locale = .current
+        formatter.dateFormat = "HH'h'mm"
+        return formatter.string(from: self)
+    }
+    
+    /// Retourne si la date est comprise entre deux autres
+    func isBetween(_ start: Date, and end: Date) -> Bool {
+        if start < end {
+            return (start ... end).contains(self)
+        }
+        return (end ... start).contains(self)
+    }
 }
