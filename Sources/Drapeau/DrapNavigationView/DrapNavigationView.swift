@@ -52,24 +52,30 @@ public struct DrapNavigationView<Content: View>: View {
     
     public var body: some View {
         NavigationStack {
-            ScrollView {
-                page(selection)
-            }
-            .navigationTitle(navigationTitle)
-            .toolbar {
-                ToolbarItem(placement: .largeTitle) {
-                    VStack(spacing: 0) {
-                        HStack {
-                            Text(selectedMonth)
+            ZStack {
+                Color.drapPrimaryBackground
+                    .ignoresSafeArea()
+                
+                ScrollView {
+                    page(selection)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .navigationTitle(navigationTitle)
+                .toolbar {
+                    ToolbarItem(placement: .largeTitle) {
+                        VStack(spacing: 0) {
+                            HStack {
+                                Text(selectedMonth)
+                                
+                                Text(selectedYear)
+                                    .foregroundStyle(Color.drapSecondaryText)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .drapPageTitle()
                             
-                            Text(selectedYear)
-                                .foregroundStyle(Color.drapSecondaryText)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .drapPageTitle()
-                        
-                        DateSelectorView(selectedDate: $selection) { date in
-                            hasData(date)
+                            DateSelectorView(selectedDate: $selection) { date in
+                                hasData(date)
+                            }
                         }
                     }
                 }
@@ -107,7 +113,7 @@ public struct DrapNavigationView<Content: View>: View {
                 Text("Contenu du \(date.formatted(date: .complete, time: .omitted))")
                 Rectangle().frame(width: 120, height: 800)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            //.frame(maxWidth: .infinity, maxHeight: .infinity)
         } hasData: { date in
             return date.isSameDayAs(Date(timeIntervalSince1970: 1758317975))
         }
