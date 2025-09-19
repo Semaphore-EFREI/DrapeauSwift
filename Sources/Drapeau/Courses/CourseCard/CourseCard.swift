@@ -27,7 +27,7 @@ public struct CourseCard: View {
     
     /// Uniquement pour les prévisualisations
     /// Mettre bundle = ProjectBundle.module
-    init(bundle: Bundle, infos: CourseViewInfos) {
+    public init(bundle: Bundle, infos: CourseViewInfos) {
         self.bundle = bundle
         self.infos = infos
     }

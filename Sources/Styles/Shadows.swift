@@ -22,7 +22,7 @@ public extension View {
     }
 
     func courseCardShadow() -> some View {
-        self.shadow(color: Color(hue: 0, saturation: 0, brightness: 0, opacity: 0.06), radius: 8, y: 4)
+        self.shadow(color: Color(hue: 0, saturation: 0, brightness: 0, opacity: 0.06), radius: 4, y: 4)
     }
     
     func activeCourseCardShadow() -> some View {
