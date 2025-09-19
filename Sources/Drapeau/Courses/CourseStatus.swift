@@ -28,7 +28,7 @@ public enum CourseStatus {
         return switch self {
         case .now: "Sceau En Cours"
         case .late: "Sceau Retard"
-        case .present: "Sceau Present"
+        case .present: "Sceau Presence"
         case .presentToken: "Sceau Jeton Presence"
         case .absent: "Sceau Absent"
         case .later: "Sceau Plus Tard"
