@@ -61,15 +61,18 @@ public struct DrapNavigationView<Content: View>: View {
                 .toolbar {
                     ToolbarItem(placement: .largeTitle) {
                         VStack(spacing: 0) {
+                            // Mois et année
                             HStack {
                                 Text(selectedMonth)
                                 
                                 Text(selectedYear)
                                     .foregroundStyle(Color.drapSecondaryText)
                             }
+                            .padding(.top)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .drapPageTitle()
                             
+                            // Sélecteur de date
                             DateSelectorView(selectedDate: $selection) { date in
                                 hasData(date)
                             }
