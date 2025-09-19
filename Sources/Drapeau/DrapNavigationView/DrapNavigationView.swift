@@ -15,7 +15,6 @@ public struct DrapNavigationView<Content: View>: View {
     
     // MARK: Public API
     
-    private let navigationTitle: String
     @ViewBuilder private let page: (Date) -> Content
     private let hasData: (Date) -> Bool
     
@@ -29,11 +28,9 @@ public struct DrapNavigationView<Content: View>: View {
     // MARK: Init
     
     public init(
-        navigationTitle: String = "Aujourd'hui",
         @ViewBuilder content: @escaping (Date) -> Content,
         hasData: @escaping (Date) -> Bool
     ) {
-        self.navigationTitle = navigationTitle
         self.page = content
         self.hasData = hasData
         
@@ -60,7 +57,7 @@ public struct DrapNavigationView<Content: View>: View {
                     page(selection)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                .navigationTitle(navigationTitle)
+                .navigationTitle(fullDate)
                 .toolbar {
                     ToolbarItem(placement: .largeTitle) {
                         VStack(spacing: 0) {
@@ -100,6 +97,14 @@ public struct DrapNavigationView<Content: View>: View {
         formatter.dateFormat = "yyyy"
         return formatter.string(from: selection).capitalized
     }
+    
+    var fullDate: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale.current
+        formatter.dateStyle = .long
+        formatter.timeStyle = .none
+        return formatter.string(from: selection)
+    }
 }
 
 
@@ -108,7 +113,7 @@ public struct DrapNavigationView<Content: View>: View {
 @available(iOS 26.0, macOS 26.0, *)
 #Preview {
     PreviewScaffold(disablePadding: true) {
-        DrapNavigationView(navigationTitle: "Navbar") { date in
+        DrapNavigationView { date in
             VStack(spacing: 24) {
                 Text("Contenu du \(date.formatted(date: .complete, time: .omitted))")
                 Rectangle().frame(width: 120, height: 800)

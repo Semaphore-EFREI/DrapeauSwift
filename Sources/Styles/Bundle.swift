@@ -11,7 +11,7 @@ import SwiftUI
 /// Uniquement pour les prévisualisations dans cette bibliothèque
 public enum ProjectBundle {
     public static var module: Bundle {
-        return .module
+        return Bundle.module
     }
 }
 
