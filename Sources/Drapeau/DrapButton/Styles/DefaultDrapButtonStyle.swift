@@ -55,7 +55,7 @@ public struct DefaultDrapButtonStyle: DrapButtonStyle {
             .padding(.vertical, padding.height)
             .frame(minWidth: minSize?.width, minHeight: minSize?.height, alignment: .center)
             .frame(maxWidth: expand ? .infinity : nil)
-            .conditionalBackground(cornersStyle: cornersStyle, backgroundColor: backgroundColor ?? tint, showGlassEffect: showGlassEffect)
+            .conditionalBackground(cornersStyle: cornersStyle, liquidBackgroundColor: backgroundColor ?? tint, backgroundColor: backgroundColor ?? tint, showGlassEffect: showGlassEffect)
         }
         
         
