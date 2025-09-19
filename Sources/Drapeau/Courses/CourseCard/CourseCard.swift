@@ -12,7 +12,6 @@ public struct CourseCard: View {
     
     // MARK: Attributes
     
-    var bundle: Bundle
     var infos: CourseViewInfos
     
     
@@ -21,14 +20,6 @@ public struct CourseCard: View {
     // MARK: Init
     
     public init(infos: CourseViewInfos) {
-        self.bundle = .main
-        self.infos = infos
-    }
-    
-    /// Uniquement pour les prévisualisations
-    /// Mettre bundle = ProjectBundle.module
-    public init(bundle: Bundle, infos: CourseViewInfos) {
-        self.bundle = bundle
         self.infos = infos
     }
     
@@ -50,7 +41,7 @@ public struct CourseCard: View {
     
     var topView: some View {
         HStack(spacing: 13) {   // Devrait être 16, mais l'ombre du sceau inclu dans l'image doit être soustraite (valeur de 10/3)
-            Image(infos.status.sealImage, bundle: bundle)     // TODO: Enlever l'ombre des PNG, et les appliquer dans le code
+            Image(infos.status.sealImage, bundle: ProjectBundle.module)     // TODO: Enlever l'ombre des PNG, et les appliquer dans le code
                 .resizable()
                 .scaledToFit()
                 .frame(width: 169/3, height: 169/3)
@@ -144,7 +135,6 @@ public struct CourseCard: View {
 #Preview {
     PreviewScaffold(backgroundColor: .drapPrimaryBackground) {
         CourseCard(
-            bundle: ProjectBundle.module,
             infos:
                 CourseViewInfos(
                     name: .constant("De l'Atome à la Puce"),
