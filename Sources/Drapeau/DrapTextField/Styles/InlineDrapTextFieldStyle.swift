@@ -70,7 +70,7 @@ public struct InlineDrapTextFieldStyle: DrapTextFieldStyle {
             .foregroundStyle(Color.drapPrimaryText)
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
-            .conditionalBackground(cornersStyle: .round, liquidBackgroundColor: backgroundColor, backgroundColor: backgroundColor)
+            .conditionalBackground(cornersStyle: .round, liquidBackgroundColor: liquidBackgroundColor, backgroundColor: backgroundColor)
         }
         
         
@@ -91,6 +91,10 @@ public struct InlineDrapTextFieldStyle: DrapTextFieldStyle {
             case .secondary:
                 .drapSecondaryBackground
             }
+        }
+        
+        var liquidBackgroundColor: Color {
+            .drapTertiaryBackground
         }
     }
 }
