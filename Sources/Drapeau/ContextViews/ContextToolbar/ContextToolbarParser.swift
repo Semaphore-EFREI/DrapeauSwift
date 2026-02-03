@@ -106,7 +106,7 @@ public struct ContextToolbarButton: ContextToolbarContent {
     let placement: ContextToolbarPlacement
     @ViewBuilder var label: DrapButton<ActionBarDrapButtonStyle>
     
-    init(id: AnyHashable = UUID(), placement: ContextToolbarPlacement, @ViewBuilder label: () -> DrapButton<ActionBarDrapButtonStyle>) {
+    public init(id: AnyHashable = UUID(), placement: ContextToolbarPlacement, @ViewBuilder label: () -> DrapButton<ActionBarDrapButtonStyle>) {
         self.id = id
         self.placement = placement
         self.label = label()
