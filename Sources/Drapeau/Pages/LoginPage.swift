@@ -13,7 +13,7 @@ public struct LoginPage: View {
     
     // MARK: Attributes
     
-    @Binding var mail: String
+    @Binding var login: String
     @Binding var password: String
     var userRole: UserRole
     var action: () -> Void
@@ -22,7 +22,7 @@ public struct LoginPage: View {
     // MARK: Init
     
     public init(mail: Binding<String>, password: Binding<String>, userRole: UserRole, action: @escaping () -> Void) {
-        self._mail = mail
+        self._login = mail
         self._password = password
         self.userRole = userRole
         self.action = action
@@ -53,11 +53,11 @@ public struct LoginPage: View {
                 .drapPageTitle()
             
             VStack(spacing: 24) {
-                DrapTextField(label: "Identifiant", placeholder: "etudiant@semaphore.com", value: $mail)
+                DrapTextField(label: "Identifiant", placeholder: "etudiant@semaphore.com", value: $login)
                 DrapTextField(label: "Mot de passe", placeholder: "••••••••••••", value: $password, secured: true)
             }
             
-            DrapButton(title: "Se connecter", disabled: mail == "" || password == "") {
+            DrapButton(title: "Se connecter", disabled: login == "" || password == "") {
                 print()
             }
             .drapButtonExpand()
