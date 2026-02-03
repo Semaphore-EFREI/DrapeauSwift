@@ -19,12 +19,12 @@ public enum ContextToolbarPlacement {
 
 // MARK: - Élément Effacé
 
-struct ErasedContextToolbarItem: Identifiable, Equatable {
-    let id: AnyHashable
+public struct ErasedContextToolbarItem: Identifiable, Equatable {
+    public let id: AnyHashable
     let placement: ContextToolbarPlacement
     let makeBody: () -> AnyView
 
-    static func == (lhs: Self, rhs: Self) -> Bool {
+    static public func == (lhs: Self, rhs: Self) -> Bool {
         lhs.id == rhs.id && lhs.placement == rhs.placement
     }
 }
@@ -46,7 +46,7 @@ struct ContextToolbarPreferenceKey: PreferenceKey {
 // MARK: - Protocole Content
 
 /// Contrat minimal : tout contenu de toolbar sait "se collecter" en items effacés.
-protocol ContextToolbarContent {
+public protocol ContextToolbarContent {
     associatedtype Body: ContextToolbarContent
     @ContextToolbarContentBuilder var body: Body { get }
     
@@ -54,7 +54,7 @@ protocol ContextToolbarContent {
 }
 
 // Par défaut, un composite délègue à son `body`.
-extension ContextToolbarContent {
+public extension ContextToolbarContent {
     func _collect(into items: inout [ErasedContextToolbarItem]) {
         body._collect(into: &items)
     }
@@ -65,10 +65,10 @@ extension ContextToolbarContent {
 // MARK: - Terminaux et composites
 
 /// Élément terminal "vide"
-struct ContextToolbarEmpty: ContextToolbarContent {
-    typealias Body = ContextToolbarEmpty
-    var body: ContextToolbarEmpty { self }
-    func _collect(into items: inout [ErasedContextToolbarItem]) {}
+public struct ContextToolbarEmpty: ContextToolbarContent {
+    public typealias Body = ContextToolbarEmpty
+    public var body: ContextToolbarEmpty { self }
+    public func _collect(into items: inout [ErasedContextToolbarItem]) {}
 }
 
 
@@ -100,7 +100,7 @@ fileprivate struct ContextToolbarItem<Label: View>: ContextToolbarContent {
 
 /// Élément terminal "bouton"
 public struct ContextToolbarButton: ContextToolbarContent {
-    typealias Body = ContextToolbarEmpty
+    public typealias Body = ContextToolbarEmpty
     
     let id: AnyHashable
     let placement: ContextToolbarPlacement
@@ -112,9 +112,9 @@ public struct ContextToolbarButton: ContextToolbarContent {
         self.label = label()
     }
     
-    var body: ContextToolbarEmpty { ContextToolbarEmpty() }
+    public var body: ContextToolbarEmpty { ContextToolbarEmpty() }
     
-    func _collect(into items: inout [ErasedContextToolbarItem]) {
+    public func _collect(into items: inout [ErasedContextToolbarItem]) {
         items.append(ErasedContextToolbarItem(
             id: id,
             placement: placement,
@@ -258,7 +258,7 @@ struct ContextToolbarModifier<C: ContextToolbarContent>: ViewModifier {
     }
 }
 
-extension View {
+public extension View {
     func contextToolbar<C: ContextToolbarContent>(@ContextToolbarContentBuilder _ content: () -> C) -> some View {
         modifier(ContextToolbarModifier(content: content))
     }
