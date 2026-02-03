@@ -10,7 +10,7 @@ import Styles
 
 
 /// Protocol vide pour que `ContextWindow` soit différentiable des autres `View`
-protocol ContextWindowProtocol: View {}
+public protocol ContextWindowProtocol: View {}
 
 
 public struct ContextWindow<Content: View, BottomContent: View>: ContextWindowProtocol {
