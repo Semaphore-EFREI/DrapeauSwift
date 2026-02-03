@@ -126,13 +126,13 @@ public struct ContextToolbarButton: ContextToolbarContent {
 
 
 /// Composite binaire (équivalent conceptuel d’un _TupleView<Left, Right>)
-struct ContextToolbarPair<Left: ContextToolbarContent, Right: ContextToolbarContent>: ContextToolbarContent {
+public struct ContextToolbarPair<Left: ContextToolbarContent, Right: ContextToolbarContent>: ContextToolbarContent {
     let left: Left
     let right: Right
 
-    var body: some ContextToolbarContent { left; right }
+    public var body: some ContextToolbarContent { left; right }
 
-    func _collect(into items: inout [ErasedContextToolbarItem]) {
+    public func _collect(into items: inout [ErasedContextToolbarItem]) {
         left._collect(into: &items)
         right._collect(into: &items)
     }
@@ -140,32 +140,32 @@ struct ContextToolbarPair<Left: ContextToolbarContent, Right: ContextToolbarCont
 
 
 /// Composite pour optionnels (if let / ?)
-struct ContextToolbarOptional<Wrapped: ContextToolbarContent>: ContextToolbarContent {
+public struct ContextToolbarOptional<Wrapped: ContextToolbarContent>: ContextToolbarContent {
     let wrapped: Wrapped?
 
-    var body: some ContextToolbarContent {
+    public var body: some ContextToolbarContent {
         if let w = wrapped { w } else { ContextToolbarEmpty() }
     }
 
-    func _collect(into items: inout [ErasedContextToolbarItem]) {
+    public func _collect(into items: inout [ErasedContextToolbarItem]) {
         if let w = wrapped { w._collect(into: &items) }
     }
 }
 
 
 /// Composite pour if/else
-struct ContextToolbarEither<First: ContextToolbarContent, Second: ContextToolbarContent>: ContextToolbarContent {
+public struct ContextToolbarEither<First: ContextToolbarContent, Second: ContextToolbarContent>: ContextToolbarContent {
     enum Storage { case first(First), second(Second) }
     let storage: Storage
 
-    var body: some ContextToolbarContent {
+    public var body: some ContextToolbarContent {
         switch storage {
         case .first(let f): f
         case .second(let s): s
         }
     }
 
-    func _collect(into items: inout [ErasedContextToolbarItem]) {
+    public func _collect(into items: inout [ErasedContextToolbarItem]) {
         switch storage {
         case .first(let f):  f._collect(into: &items)
         case .second(let s): s._collect(into: &items)
@@ -175,10 +175,10 @@ struct ContextToolbarEither<First: ContextToolbarContent, Second: ContextToolbar
 
 
 /// Composite pour tableaux (boucles)
-struct ContextToolbarArray<Element: ContextToolbarContent>: ContextToolbarContent {
+public struct ContextToolbarArray<Element: ContextToolbarContent>: ContextToolbarContent {
     let elements: [Element]
     
-    var body: some ContextToolbarContent {
+    public var body: some ContextToolbarContent {
         if let first = elements.first {
             ContextToolbarPair(left: first, right: ContextToolbarArray(elements: Array(elements.dropFirst())))
         } else {
@@ -186,7 +186,7 @@ struct ContextToolbarArray<Element: ContextToolbarContent>: ContextToolbarConten
         }
     }
 
-    func _collect(into items: inout [ErasedContextToolbarItem]) {
+    public func _collect(into items: inout [ErasedContextToolbarItem]) {
         for e in elements { e._collect(into: &items) }
     }
 }
@@ -196,26 +196,26 @@ struct ContextToolbarArray<Element: ContextToolbarContent>: ContextToolbarConten
 // MARK: - Result builder
 
 @resultBuilder
-struct ContextToolbarContentBuilder {
+public struct ContextToolbarContentBuilder {
     // 0 éléments
-    static func buildBlock() -> ContextToolbarEmpty { ContextToolbarEmpty() }
+    static public func buildBlock() -> ContextToolbarEmpty { ContextToolbarEmpty() }
 
     // 1 élément
-    static func buildBlock<C1: ContextToolbarContent>(_ c1: C1) -> C1 { c1 }
+    static public func buildBlock<C1: ContextToolbarContent>(_ c1: C1) -> C1 { c1 }
 
     // 2 éléments
-    static func buildBlock<C1: ContextToolbarContent, C2: ContextToolbarContent>(_ c1: C1, _ c2: C2)
+    static public func buildBlock<C1: ContextToolbarContent, C2: ContextToolbarContent>(_ c1: C1, _ c2: C2)
         -> ContextToolbarPair<C1, C2> { ContextToolbarPair(left: c1, right: c2) }
 
     // 3 éléments
-    static func buildBlock<C1: ContextToolbarContent, C2: ContextToolbarContent, C3: ContextToolbarContent>(
+    static public func buildBlock<C1: ContextToolbarContent, C2: ContextToolbarContent, C3: ContextToolbarContent>(
         _ c1: C1, _ c2: C2, _ c3: C3
     ) -> ContextToolbarPair<ContextToolbarPair<C1, C2>, C3> {
         ContextToolbarPair(left: ContextToolbarPair(left: c1, right: c2), right: c3)
     }
 
     // 4 éléments
-    static func buildBlock<C1: ContextToolbarContent, C2: ContextToolbarContent, C3: ContextToolbarContent, C4: ContextToolbarContent>(
+    static public func buildBlock<C1: ContextToolbarContent, C2: ContextToolbarContent, C3: ContextToolbarContent, C4: ContextToolbarContent>(
         _ c1: C1, _ c2: C2, _ c3: C3, _ c4: C4
     ) -> ContextToolbarPair<ContextToolbarPair<C1, C2>, ContextToolbarPair<C3, C4>> {
         ContextToolbarPair(left: ContextToolbarPair(left: c1, right: c2),
@@ -223,19 +223,19 @@ struct ContextToolbarContentBuilder {
     }
 
     // Optionnels
-    static func buildOptional<C: ContextToolbarContent>(_ c: C?) -> ContextToolbarOptional<C> {
+    static public func buildOptional<C: ContextToolbarContent>(_ c: C?) -> ContextToolbarOptional<C> {
         ContextToolbarOptional(wrapped: c)
     }
 
     // if/else
-    static func buildEither<First: ContextToolbarContent, Second: ContextToolbarContent>(first: First)
+    static public func buildEither<First: ContextToolbarContent, Second: ContextToolbarContent>(first: First)
         -> ContextToolbarEither<First, Second> { ContextToolbarEither(storage: .first(first)) }
 
-    static func buildEither<First: ContextToolbarContent, Second: ContextToolbarContent>(second: Second)
+    static public func buildEither<First: ContextToolbarContent, Second: ContextToolbarContent>(second: Second)
         -> ContextToolbarEither<First, Second> { ContextToolbarEither(storage: .second(second)) }
 
     // Boucles
-    static func buildArray<C: ContextToolbarContent>(_ components: [C]) -> ContextToolbarArray<C> {
+    static public func buildArray<C: ContextToolbarContent>(_ components: [C]) -> ContextToolbarArray<C> {
         ContextToolbarArray(elements: components)
     }
 }
