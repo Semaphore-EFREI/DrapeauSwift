@@ -21,8 +21,8 @@ public struct LoginPage: View {
     
     // MARK: Init
     
-    public init(mail: Binding<String>, password: Binding<String>, userRole: UserRole, action: @escaping () -> Void) {
-        self._login = mail
+    public init(login: Binding<String>, password: Binding<String>, userRole: UserRole, action: @escaping () -> Void) {
+        self._login = login
         self._password = password
         self.userRole = userRole
         self.action = action
@@ -77,7 +77,7 @@ public struct LoginPage: View {
     @Previewable @State var password: String = ""
     
     PreviewScaffold(disablePadding: true) {
-        LoginPage(mail: $mail, password: $password, userRole: .teacher) {
+        LoginPage(login: $mail, password: $password, userRole: .teacher) {
             print("")
         }
     }
