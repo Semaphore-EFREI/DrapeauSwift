@@ -8,7 +8,7 @@
 import Foundation
 
 
-extension Int64 {
+public extension Int64 {
     var timestampToDateAndTime: String {
         let date = Date(timeIntervalSince1970: TimeInterval(self))
         
