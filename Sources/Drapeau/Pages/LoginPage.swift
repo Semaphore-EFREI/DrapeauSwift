@@ -77,7 +77,7 @@ public struct LoginPage: View {
     @Previewable @State var password: String = ""
     
     PreviewScaffold(disablePadding: true) {
-        LoginPage(login: $mail, password: $password, userRole: .teacher) {
+        LoginPage(login: $mail, password: $password, userRole: .student) {
             print("")
         }
     }

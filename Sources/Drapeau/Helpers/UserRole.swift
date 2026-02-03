@@ -21,7 +21,7 @@ public enum UserRole {
     
     var tint: Color {
         switch self {
-        case .student: .drapGreen
+        case .student: .drapCyan
         case .teacher: .drapPurple
         default: .drapBlue
         }
