@@ -58,7 +58,7 @@ public struct LoginPage: View {
             }
             
             DrapButton(title: "Se connecter", disabled: login == "" || password == "") {
-                print()
+                action()
             }
             .drapButtonExpand()
             .drapButtonTint(userRole.tint)
