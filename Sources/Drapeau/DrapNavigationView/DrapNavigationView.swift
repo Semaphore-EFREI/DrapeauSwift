@@ -61,7 +61,7 @@ public struct DrapNavigationView<Content: View>: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
                 .refreshable {
-                    <#code#>
+                    refreshAction()
                 }
                 .navigationTitle(fullDate)
                 .toolbar {
