@@ -86,14 +86,14 @@ public struct CourseCell: View {
         CourseCell(
             infos:
                 CourseViewInfos(
-                    name: .constant("De l'Atome à la Puce"),
-                    status: .constant(.now),
-                    startDate: .constant(Date(timeIntervalSince1970: Date().timeIntervalSince1970 - 600)),
-                    endDate: .constant(Date(timeIntervalSince1970: Date().timeIntervalSince1970 + 2400)),
-                    place: .constant("H116"),
-                    signatureEndDate: .constant(Date(timeIntervalSince1970: Date().timeIntervalSince1970 + 540)),
-                    hasMessages: .constant(false),
-                    signature: .constant([])
+                    name: "De l'Atome à la Puce",
+                    status: .now,
+                    startDate: Date(timeIntervalSince1970: Date().timeIntervalSince1970 - 600),
+                    endDate: Date(timeIntervalSince1970: Date().timeIntervalSince1970 + 2400),
+                    place: "H116",
+                    signatureEndDate: Date(timeIntervalSince1970: Date().timeIntervalSince1970 + 540),
+                    hasMessages: false,
+                    signature: []
                 )
         )
     }
