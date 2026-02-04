@@ -15,8 +15,8 @@ public struct SettingsPage: View {
     
     @EnvironmentObject var metrics: ScreenMetrics
     
-    var name: String
-    var pseudo: String
+    var firstName: String
+    var lastName: String
     var userRole: UserRole
     var deviceLinkedToOtherDevice: Bool
     var deviceLock: Int?                // En minutes
@@ -26,9 +26,9 @@ public struct SettingsPage: View {
     
     // MARK: Init
     
-    public init(name: String, pseudo: String, userRole: UserRole, deviceLinkedToOtherDevice: Bool, deviceLock: Int? = nil, closePage: @escaping () -> Void, disconnectAction: @escaping () -> Void) {
-        self.name = name
-        self.pseudo = pseudo
+    public init(firstName: String, lastName: String, userRole: UserRole, deviceLinkedToOtherDevice: Bool, deviceLock: Int? = nil, closePage: @escaping () -> Void, disconnectAction: @escaping () -> Void) {
+        self.firstName = firstName
+        self.lastName = lastName
         self.userRole = userRole
         self.deviceLinkedToOtherDevice = deviceLinkedToOtherDevice
         self.deviceLock = deviceLock
@@ -111,12 +111,12 @@ public struct SettingsPage: View {
                     .frame(width: 54, height: 54)
                     .roundedCorners(style: .round)
                 
-                Text("MD")
+                Text("\(firstName.first.map(String.init) ?? "")\(lastName.first.map(String.init) ?? "")")
                     .drapPageTitle()
                     .foregroundStyle(Color.white)
             }
             
-            Text("Marc DUPONT")
+            Text("\(firstName) \(lastName)")
                 .drapPageTitle()
             
             Spacer()
@@ -195,7 +195,7 @@ public struct SettingsPage: View {
 
 #Preview {
     PreviewScaffold(disablePadding: true) {
-        SettingsPage(name: "Marc DUPONT", pseudo: "MD", userRole: .teacher, deviceLinkedToOtherDevice: true, deviceLock: nil) {
+        SettingsPage(firstName: "Marc", lastName: "DUPONT", userRole: .teacher, deviceLinkedToOtherDevice: true, deviceLock: nil) {
             print("")
         } disconnectAction: {
             print("")
