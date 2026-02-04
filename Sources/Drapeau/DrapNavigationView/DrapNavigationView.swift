@@ -17,6 +17,7 @@ public struct DrapNavigationView<Content: View>: View {
     
     @ViewBuilder private let page: (Date) -> Content
     private let hasData: (Date) -> Bool
+    private let refreshAction: () -> Void
     
     
     // MARK: State
@@ -29,10 +30,12 @@ public struct DrapNavigationView<Content: View>: View {
     
     public init(
         @ViewBuilder content: @escaping (Date) -> Content,
-        hasData: @escaping (Date) -> Bool
+        hasData: @escaping (Date) -> Bool,
+        refreshAction: @escaping () -> Void
     ) {
         self.page = content
         self.hasData = hasData
+        self.refreshAction = refreshAction
         
         #if os(iOS)
         let montserratSmall = UIFont(name: "Montserrat-Medium", size: 17) ?? UIFont.systemFont(ofSize: 15)
@@ -56,6 +59,9 @@ public struct DrapNavigationView<Content: View>: View {
                 ScrollView {
                     page(selection)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .refreshable {
+                    <#code#>
                 }
                 .navigationTitle(fullDate)
                 .toolbar {
@@ -124,6 +130,8 @@ public struct DrapNavigationView<Content: View>: View {
             //.frame(maxWidth: .infinity, maxHeight: .infinity)
         } hasData: { date in
             return date.isSameDayAs(Date(timeIntervalSince1970: 1758317975))
+        } refreshAction: {
+            print("")
         }
     }
     
