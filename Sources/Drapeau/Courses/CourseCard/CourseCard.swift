@@ -144,7 +144,7 @@ public struct CourseCard: View {
                     place: "H116",
                     signatureEndDate: Date(timeIntervalSince1970: Date().timeIntervalSince1970 + 540),
                     hasMessages: false,
-                    signature: []
+                    signature: ""
                 )
         )
         .activeCourseCardShadow()

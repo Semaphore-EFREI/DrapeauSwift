@@ -15,9 +15,9 @@ public class CourseViewInfos {
     public var place: String
     public var signatureEndDate: Date
     public var hasMessages: Bool
-    public var signature: [CGVector]
+    public var signature: String?
     
-    public init(name: String, status: CourseStatus, startDate: Date, endDate: Date, place: String, signatureEndDate: Date, hasMessages: Bool, signature: [CGVector]) {
+    public init(name: String, status: CourseStatus, startDate: Date, endDate: Date, place: String, signatureEndDate: Date, hasMessages: Bool, signature: String? = nil) {
         self.name = name
         self.status = status
         self.startDate = startDate
