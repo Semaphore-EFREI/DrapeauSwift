@@ -53,7 +53,7 @@ public enum CourseStatus {
     var description: String? {
         return switch self {
         case .now: nil
-        case .late: "Vous êtes en retard"
+        case .late: nil
         case .present: "Vous êtes présent !"
         case .presentToken: "Vous avez été mis présent"
         case .absent: "Malheur ! Vous êtes absent !"
