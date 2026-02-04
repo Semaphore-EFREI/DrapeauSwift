@@ -136,10 +136,7 @@ public struct CourseCard: View {
         formatter.zeroFormattingBehavior = .dropAll
         formatter.calendar?.locale = .current
         
-        print(infos.startDate)
-        print(infos.signatureEndDate)
-        
-        if let time = formatter.string(from: infos.startDate, to: infos.signatureEndDate) {
+        if let time = formatter.string(from: Date(), to: infos.signatureEndDate) {
             return "\(time) pour signer"
         }
         return "Temps écoulé"
