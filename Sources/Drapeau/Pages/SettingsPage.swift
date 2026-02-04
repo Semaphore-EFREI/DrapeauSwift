@@ -20,17 +20,19 @@ public struct SettingsPage: View {
     var userRole: UserRole
     var deviceLinkedToOtherDevice: Bool
     var deviceLock: Int?                // En minutes
+    var closePage: () -> Void
     var disconnectAction: () -> Void
     
     
     // MARK: Init
     
-    public init(name: String, pseudo: String, userRole: UserRole, deviceLinkedToOtherDevice: Bool, deviceLock: Int? = nil, disconnectAction: @escaping () -> Void) {
+    public init(name: String, pseudo: String, userRole: UserRole, deviceLinkedToOtherDevice: Bool, deviceLock: Int? = nil, closePage: @escaping () -> Void, disconnectAction: @escaping () -> Void) {
         self.name = name
         self.pseudo = pseudo
         self.userRole = userRole
         self.deviceLinkedToOtherDevice = deviceLinkedToOtherDevice
         self.deviceLock = deviceLock
+        self.closePage = closePage
         self.disconnectAction = disconnectAction
     }
     
@@ -67,9 +69,9 @@ public struct SettingsPage: View {
                 ErasedContextToolbarItem(id: UUID(), placement: .leading, makeBody: {
                     AnyView(
                         DrapButton(icon: "xmark") {
-                            print("")
+                            closePage()
                         }
-                            .style(.actionBar)
+                        .style(.actionBar)
                     )
                 })
             ]), titleConfig: ContextToolbarTitleConfiguration(title: "Paramètres"))
@@ -86,7 +88,7 @@ public struct SettingsPage: View {
                     .foregroundStyle(userRole.tint)
                 
                 DrapButton(icon: "iphone.and.arrow.right.outward", title: "Se Déconnecter") {
-                    print("")
+                    disconnectAction()
                 }
                 .drapButtonExpand()
                 .drapButtonRole(.tertiary)
@@ -194,6 +196,8 @@ public struct SettingsPage: View {
 #Preview {
     PreviewScaffold(disablePadding: true) {
         SettingsPage(name: "Marc DUPONT", pseudo: "MD", userRole: .teacher, deviceLinkedToOtherDevice: true, deviceLock: nil) {
+            print("")
+        } disconnectAction: {
             print("")
         }
     }
