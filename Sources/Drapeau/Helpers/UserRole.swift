@@ -13,9 +13,9 @@ public enum UserRole {
     
     var image: String {
         switch self {
-        case .student: "Fond Sémaphore Étudiant"
-        case .teacher: "Fond Sémaphore Enseignant"
-        default: "Fond Sémaphore Admin"
+        case .student: "Fond Semaphore Etudiant"
+        case .teacher: "Fond Semaphore Enseignant"
+        default: "Fond Semaphore Admin"
         }
     }
     
