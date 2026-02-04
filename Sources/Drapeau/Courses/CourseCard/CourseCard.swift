@@ -53,6 +53,7 @@ public struct CourseCard: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(infos.name)
                         .drapPageSubtitle()
+                        .foregroundStyle(Color.drapPrimaryText)
                     
                     timeAndPlaceView
                 }
